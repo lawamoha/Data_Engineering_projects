@@ -35,6 +35,9 @@
 		"filessqldb_password": {
 			"value": ""
 		},
+		"ls_asqldb_dbebootcamp1_password": {
+			"value": ""
+		},
 		"ls_for_staging_accountKey": {
 			"value": ""
 		},
@@ -85,6 +88,15 @@
 		},
 		"httpgithublinkedservice_properties_typeProperties_url": {
 			"value": "https://raw.githubusercontent.com/lawamoha/"
+		},
+		"ls_asqldb_dbebootcamp1_properties_typeProperties_server": {
+			"value": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"ls_asqldb_dbebootcamp1_properties_typeProperties_database": {
+			"value": "dbdebootcamp1"
+		},
+		"ls_asqldb_dbebootcamp1_properties_typeProperties_userName": {
+			"value": "sqldeuser"
 		},
 		"ls_for_staging_properties_typeProperties_url": {
 			"value": "https://adlsforstaging.dfs.core.windows.net/"

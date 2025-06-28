@@ -47,6 +47,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'filessqldb'"
 		},
+		"ls_asqldb_dbebootcamp1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_asqldb_dbebootcamp1'"
+		},
 		"ls_for_staging_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_for_staging'"
@@ -114,6 +118,18 @@
 		"httpgithublinkedservice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://raw.githubusercontent.com/lawamoha/"
+		},
+		"ls_asqldb_dbebootcamp1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"ls_asqldb_dbebootcamp1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dbdebootcamp1"
+		},
+		"ls_asqldb_dbebootcamp1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqldeuser"
 		},
 		"ls_for_staging_properties_typeProperties_url": {
 			"type": "string",
@@ -320,6 +336,28 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ls_asqldb_dbebootcamp1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('ls_asqldb_dbebootcamp1_properties_typeProperties_server')]",
+					"database": "[parameters('ls_asqldb_dbebootcamp1_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('ls_asqldb_dbebootcamp1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('ls_asqldb_dbebootcamp1_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ls_for_staging')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -333,21 +371,6 @@
 						"value": "[parameters('ls_for_staging_accountKey')]"
 					}
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "DE_bootcamp"
-				},
-				"annotations": []
 			},
 			"dependsOn": []
 		},
