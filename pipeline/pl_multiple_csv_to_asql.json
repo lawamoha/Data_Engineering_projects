@@ -1,5 +1,5 @@
 {
-	"name": "pl_csv_asql",
+	"name": "pl_multiple_csv_to_asql",
 	"properties": {
 		"activities": [
 			{
