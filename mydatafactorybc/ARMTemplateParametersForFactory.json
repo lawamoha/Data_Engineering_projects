@@ -1,0 +1,93 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "mydatafactorybc"
+		},
+		"ADLS linked service_accountKey": {
+			"value": ""
+		},
+		"ADLSFORCSV_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_password": {
+			"value": ""
+		},
+		"AzureSynapseAnalytics1_password": {
+			"value": ""
+		},
+		"LS_COPY_HIVDATA_BLOB_SERVICE_connectionString": {
+			"value": ""
+		},
+		"LS_TO_COPY_HIV_DATA_INTO_ADLS_accountKey": {
+			"value": ""
+		},
+		"MongoDb1_connectionString": {
+			"value": ""
+		},
+		"SQLtoADLS_accountKey": {
+			"value": ""
+		},
+		"filessqldb_password": {
+			"value": ""
+		},
+		"ls_for_staging_accountKey": {
+			"value": ""
+		},
+		"ADLS linked service_properties_typeProperties_url": {
+			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"ADLSFORCSV_properties_typeProperties_url": {
+			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://satestdebc.dfs.core.windows.net/"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"value": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"value": "mydbtestadf001"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "sqldeuser"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_server": {
+			"value": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_database": {
+			"value": "dedsqlpool"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
+			"value": "sqldeuser"
+		},
+		"LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url": {
+			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"MongoDb1_properties_typeProperties_database": {
+			"value": "olistdatanosql_withamwild"
+		},
+		"SQLtoADLS_properties_typeProperties_url": {
+			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"filessqldb_properties_typeProperties_server": {
+			"value": "i0cpl.h.filess.io"
+		},
+		"filessqldb_properties_typeProperties_database": {
+			"value": "olistproject_oldestwork"
+		},
+		"filessqldb_properties_typeProperties_username": {
+			"value": "olistproject_oldestwork"
+		},
+		"httpgithublinkedservice_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/lawamoha/"
+		},
+		"ls_for_staging_properties_typeProperties_url": {
+			"value": "https://adlsforstaging.dfs.core.windows.net/"
+		}
+	}
+}

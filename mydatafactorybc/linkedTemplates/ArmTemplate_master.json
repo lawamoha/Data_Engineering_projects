@@ -1,0 +1,278 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "mydatafactorybc"
+		},
+		"ADLS linked service_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ADLS linked service'"
+		},
+		"ADLSFORCSV_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ADLSFORCSV'"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureSqlDatabase1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase1'"
+		},
+		"AzureSynapseAnalytics1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics1'"
+		},
+		"LS_COPY_HIVDATA_BLOB_SERVICE_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_COPY_HIVDATA_BLOB_SERVICE'"
+		},
+		"LS_TO_COPY_HIV_DATA_INTO_ADLS_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_TO_COPY_HIV_DATA_INTO_ADLS'"
+		},
+		"MongoDb1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MongoDb1'"
+		},
+		"SQLtoADLS_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'SQLtoADLS'"
+		},
+		"filessqldb_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'filessqldb'"
+		},
+		"ls_for_staging_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_for_staging'"
+		},
+		"ADLS linked service_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"ADLSFORCSV_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://satestdebc.dfs.core.windows.net/"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "mydbtestadf001"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqldeuser"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dedsqlpool"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqldeuser"
+		},
+		"LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"MongoDb1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "olistdatanosql_withamwild"
+		},
+		"SQLtoADLS_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"filessqldb_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "i0cpl.h.filess.io"
+		},
+		"filessqldb_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "olistproject_oldestwork"
+		},
+		"filessqldb_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "olistproject_oldestwork"
+		},
+		"httpgithublinkedservice_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/lawamoha/"
+		},
+		"ls_for_staging_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adlsforstaging.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "mydatafactorybc_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ADLS linked service_accountKey": {
+						"value": "[parameters('ADLS linked service_accountKey')]"
+					},
+					"ADLSFORCSV_accountKey": {
+						"value": "[parameters('ADLSFORCSV_accountKey')]"
+					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"AzureSqlDatabase1_password": {
+						"value": "[parameters('AzureSqlDatabase1_password')]"
+					},
+					"AzureSynapseAnalytics1_password": {
+						"value": "[parameters('AzureSynapseAnalytics1_password')]"
+					},
+					"LS_COPY_HIVDATA_BLOB_SERVICE_connectionString": {
+						"value": "[parameters('LS_COPY_HIVDATA_BLOB_SERVICE_connectionString')]"
+					},
+					"LS_TO_COPY_HIV_DATA_INTO_ADLS_accountKey": {
+						"value": "[parameters('LS_TO_COPY_HIV_DATA_INTO_ADLS_accountKey')]"
+					},
+					"MongoDb1_connectionString": {
+						"value": "[parameters('MongoDb1_connectionString')]"
+					},
+					"SQLtoADLS_accountKey": {
+						"value": "[parameters('SQLtoADLS_accountKey')]"
+					},
+					"filessqldb_password": {
+						"value": "[parameters('filessqldb_password')]"
+					},
+					"ls_for_staging_accountKey": {
+						"value": "[parameters('ls_for_staging_accountKey')]"
+					},
+					"ADLS linked service_properties_typeProperties_url": {
+						"value": "[parameters('ADLS linked service_properties_typeProperties_url')]"
+					},
+					"ADLSFORCSV_properties_typeProperties_url": {
+						"value": "[parameters('ADLSFORCSV_properties_typeProperties_url')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_server": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_server')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_database": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_database')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_userName')]"
+					},
+					"AzureSynapseAnalytics1_properties_typeProperties_server": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_server')]"
+					},
+					"AzureSynapseAnalytics1_properties_typeProperties_database": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_database')]"
+					},
+					"AzureSynapseAnalytics1_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_userName')]"
+					},
+					"LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url": {
+						"value": "[parameters('LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url')]"
+					},
+					"MongoDb1_properties_typeProperties_database": {
+						"value": "[parameters('MongoDb1_properties_typeProperties_database')]"
+					},
+					"SQLtoADLS_properties_typeProperties_url": {
+						"value": "[parameters('SQLtoADLS_properties_typeProperties_url')]"
+					},
+					"filessqldb_properties_typeProperties_server": {
+						"value": "[parameters('filessqldb_properties_typeProperties_server')]"
+					},
+					"filessqldb_properties_typeProperties_database": {
+						"value": "[parameters('filessqldb_properties_typeProperties_database')]"
+					},
+					"filessqldb_properties_typeProperties_username": {
+						"value": "[parameters('filessqldb_properties_typeProperties_username')]"
+					},
+					"httpgithublinkedservice_properties_typeProperties_url": {
+						"value": "[parameters('httpgithublinkedservice_properties_typeProperties_url')]"
+					},
+					"ls_for_staging_properties_typeProperties_url": {
+						"value": "[parameters('ls_for_staging_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "mydatafactorybc_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'mydatafactorybc_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "mydatafactorybc_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'mydatafactorybc_ArmTemplate_1')]"
+			]
+		}
+	]
+}
