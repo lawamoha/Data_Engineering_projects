@@ -1,0 +1,20 @@
+{
+	"name": "ds_parquet_handycandy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS linked service",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "handycandy.parquet",
+				"fileSystem": "parquet-staging"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
