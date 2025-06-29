@@ -1,0 +1,19 @@
+{
+	"name": "ds_Json_sugarcube",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS linked service",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData/SugarCube/2020/Q2",
+				"fileSystem": "source"
+			}
+		},
+		"schema": {}
+	}
+}
