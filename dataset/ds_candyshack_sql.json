@@ -1,0 +1,16 @@
+{
+	"name": "ds_candyshack_sql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_asqldb_dbebootcamp1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Sales_LOAD_NEW"
+		}
+	}
+}
