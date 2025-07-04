@@ -55,6 +55,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_for_staging'"
 		},
+		"ls_mydedsqlpool_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_mydedsqlpool'"
+		},
+		"ls_newstorageaccount_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_newstorageaccount'"
+		},
 		"ADLS linked service_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
@@ -135,6 +143,22 @@
 			"type": "string",
 			"defaultValue": "https://adlsforstaging.dfs.core.windows.net/"
 		},
+		"ls_mydedsqlpool_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "desynapsespace.sql.azuresynapse.net"
+		},
+		"ls_mydedsqlpool_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "mydedsqlpool"
+		},
+		"ls_mydedsqlpool_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladminuser"
+		},
+		"ls_newstorageaccount_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -198,6 +222,12 @@
 					"ls_for_staging_accountKey": {
 						"value": "[parameters('ls_for_staging_accountKey')]"
 					},
+					"ls_mydedsqlpool_password": {
+						"value": "[parameters('ls_mydedsqlpool_password')]"
+					},
+					"ls_newstorageaccount_accountKey": {
+						"value": "[parameters('ls_newstorageaccount_accountKey')]"
+					},
 					"ADLS linked service_properties_typeProperties_url": {
 						"value": "[parameters('ADLS linked service_properties_typeProperties_url')]"
 					},
@@ -257,6 +287,18 @@
 					},
 					"ls_for_staging_properties_typeProperties_url": {
 						"value": "[parameters('ls_for_staging_properties_typeProperties_url')]"
+					},
+					"ls_mydedsqlpool_properties_typeProperties_server": {
+						"value": "[parameters('ls_mydedsqlpool_properties_typeProperties_server')]"
+					},
+					"ls_mydedsqlpool_properties_typeProperties_database": {
+						"value": "[parameters('ls_mydedsqlpool_properties_typeProperties_database')]"
+					},
+					"ls_mydedsqlpool_properties_typeProperties_userName": {
+						"value": "[parameters('ls_mydedsqlpool_properties_typeProperties_userName')]"
+					},
+					"ls_newstorageaccount_properties_typeProperties_url": {
+						"value": "[parameters('ls_newstorageaccount_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -300,6 +342,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'mydatafactorybc_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "mydatafactorybc_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'mydatafactorybc_ArmTemplate_2')]"
 			]
 		}
 	]

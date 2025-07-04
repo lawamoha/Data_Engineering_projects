@@ -41,6 +41,12 @@
 		"ls_for_staging_accountKey": {
 			"value": ""
 		},
+		"ls_mydedsqlpool_password": {
+			"value": ""
+		},
+		"ls_newstorageaccount_accountKey": {
+			"value": ""
+		},
 		"ADLS linked service_properties_typeProperties_url": {
 			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
 		},
@@ -100,6 +106,18 @@
 		},
 		"ls_for_staging_properties_typeProperties_url": {
 			"value": "https://adlsforstaging.dfs.core.windows.net/"
+		},
+		"ls_mydedsqlpool_properties_typeProperties_server": {
+			"value": "desynapsespace.sql.azuresynapse.net"
+		},
+		"ls_mydedsqlpool_properties_typeProperties_database": {
+			"value": "mydedsqlpool"
+		},
+		"ls_mydedsqlpool_properties_typeProperties_userName": {
+			"value": "sqladminuser"
+		},
+		"ls_newstorageaccount_properties_typeProperties_url": {
+			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""
