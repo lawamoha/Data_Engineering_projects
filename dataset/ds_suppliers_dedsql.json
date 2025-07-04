@@ -1,0 +1,16 @@
+{
+	"name": "ds_suppliers_dedsql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_mydedsqlpool",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Suppliers"
+		}
+	}
+}
