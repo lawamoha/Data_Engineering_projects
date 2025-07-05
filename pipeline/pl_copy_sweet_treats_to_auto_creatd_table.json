@@ -62,13 +62,7 @@
 					"sink": {
 						"type": "AzureSqlSink",
 						"preCopyScript": "drop table dbo.auto_created",
-						"writeBehavior": "upsert",
-						"upsertSettings": {
-							"useTempDB": true,
-							"keys": [
-								"SalesMonth"
-							]
-						},
+						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"tableOption": "autoCreate",
 						"disableMetricsCollection": false
