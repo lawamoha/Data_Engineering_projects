@@ -48,7 +48,7 @@
 					},
 					"activities": [
 						{
-							"name": "Get_SalesLT_Tables_Metadata_copy1",
+							"name": "Get_SalesLT_Tables_Metadata",
 							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
@@ -71,7 +71,8 @@
 									}
 								},
 								"fieldList": [
-									"exists"
+									"exists",
+									"structure"
 								]
 							}
 						}
@@ -79,7 +80,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "ForEachTableFromMetaData",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -89,7 +90,80 @@
 						]
 					}
 				],
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get_SalesLT_Tables_Metadata').output.exists",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy tables to csv",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings",
+										"copyBehavior": "PreserveHierarchy"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_saleslt_with_parameter_copy_activity",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": {
+											"value": "@item().TABLE_NAME",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_csv_saleslt_tables_with_parameters",
+									"type": "DatasetReference",
+									"parameters": {
+										"filename": {
+											"value": "@concat(item().TABLE_NAME,'.csv')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
 			}
 		],
 		"folder": {
