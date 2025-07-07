@@ -1,5 +1,5 @@
 {
-	"name": "pl_foreach_and_copy",
+	"name": "pl_using_foreach_and_copy_into_blob_storage",
 	"properties": {
 		"description": "using for each to copy data into blob storage",
 		"activities": [
