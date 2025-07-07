@@ -93,7 +93,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get_SalesLT_Tables_Metadata').output.exists",
+						"value": "@activity('Lookup Tables').output",
 						"type": "Expression"
 					},
 					"activities": [
@@ -143,7 +143,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"TableName": {
-											"value": "@item().TABLE_NAME",
+											"value": "@item().value.TABLE_NAME",
 											"type": "Expression"
 										}
 									}
@@ -155,7 +155,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
-											"value": "@concat(item().TABLE_NAME,'.csv')",
+											"value": "@concat(item().Value.TABLE_NAME,'.csv')",
 											"type": "Expression"
 										}
 									}
