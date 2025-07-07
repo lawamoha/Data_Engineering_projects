@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable2",
+	"name": "ds_sqltables_with_manually_gener_parameters",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureSqlDatabase1",
