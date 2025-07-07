@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText2",
+	"name": "ds_sink_saleslt_table_to_blob_stor_acct",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_COPY_HIVDATA_BLOB_SERVICE",
