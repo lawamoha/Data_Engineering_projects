@@ -93,7 +93,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup Tables').output",
+						"value": "@activity('Lookup Tables').output.value",
 						"type": "Expression"
 					},
 					"activities": [
@@ -143,7 +143,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"TableName": {
-											"value": "@item().value.TABLE_NAME",
+											"value": "@item().TABLE_NAME",
 											"type": "Expression"
 										}
 									}
@@ -155,7 +155,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
-											"value": "@concat(item().Value.TABLE_NAME,'.csv')",
+											"value": "@concat(item().TABLE_NAME,'.csv')",
 											"type": "Expression"
 										}
 									}
