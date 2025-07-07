@@ -4,7 +4,7 @@
 		"description": "using for each to copy data into blob storage",
 		"activities": [
 			{
-				"name": "ForEach1",
+				"name": "ForEachTable",
 				"type": "ForEach",
 				"dependsOn": [],
 				"userProperties": [],
