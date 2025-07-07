@@ -15,7 +15,7 @@
 					},
 					"activities": [
 						{
-							"name": "Copy data1",
+							"name": "Copy SalesLT tables from Sqldb to blob storage",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -56,7 +56,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "AzureSqlTable2",
+									"referenceName": "ds_sqltables_with_manually_gener_parameters",
 									"type": "DatasetReference",
 									"parameters": {
 										"TableName": {
@@ -72,7 +72,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DelimitedText2",
+									"referenceName": "ds_sink_saleslt_table_to_blob_stor_acct",
 									"type": "DatasetReference",
 									"parameters": {
 										"FileName": {
