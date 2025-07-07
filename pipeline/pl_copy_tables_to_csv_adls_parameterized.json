@@ -1,0 +1,47 @@
+{
+	"name": "pl_copy_tables_to_csv_adls_parameterized",
+	"properties": {
+		"description": "copy and convert a set of tables to csv files using adf\nsource sqldb\nsink adls",
+		"activities": [
+			{
+				"name": "Get_SalesLT_Tables_Metadata",
+				"type": "GetMetadata",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_saleslt_mydbtestadf001",
+						"type": "DatasetReference"
+					},
+					"fieldList": []
+				}
+			},
+			{
+				"name": "Lookup Tables",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
+			}
+		],
+		"folder": {
+			"name": "DE_bootcamp"
+		},
+		"annotations": []
+	}
+}
