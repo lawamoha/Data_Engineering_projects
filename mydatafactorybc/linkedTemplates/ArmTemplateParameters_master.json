@@ -119,7 +119,7 @@
 		"ls_newstorageaccount_properties_typeProperties_url": {
 			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
 		},
-		"trigger_new_parquet_file_properties_typeProperties_scope": {
+		"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
 			"value": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/Az900/providers/Microsoft.Storage/storageAccounts/mynewstorageacctdb"
 		},
 		"containerUri": {

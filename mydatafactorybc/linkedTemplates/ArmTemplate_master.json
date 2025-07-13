@@ -159,7 +159,7 @@
 			"type": "string",
 			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
 		},
-		"trigger_new_parquet_file_properties_typeProperties_scope": {
+		"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/Az900/providers/Microsoft.Storage/storageAccounts/mynewstorageacctdb"
 		},
@@ -382,8 +382,8 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"trigger_new_parquet_file_properties_typeProperties_scope": {
-						"value": "[parameters('trigger_new_parquet_file_properties_typeProperties_scope')]"
+					"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
+						"value": "[parameters('trigger_for_handy_candy_parquet_properties_typeProperties_scope')]"
 					}
 				}
 			},
