@@ -159,6 +159,10 @@
 			"type": "string",
 			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
 		},
+		"trigger_new_parquet_file_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/Az900/providers/Microsoft.Storage/storageAccounts/mynewstorageacctdb"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -377,6 +381,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"trigger_new_parquet_file_properties_typeProperties_scope": {
+						"value": "[parameters('trigger_new_parquet_file_properties_typeProperties_scope')]"
 					}
 				}
 			},
