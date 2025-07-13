@@ -13,7 +13,7 @@
 		],
 		"type": "BlobEventsTrigger",
 		"typeProperties": {
-			"blobPathBeginsWith": "/parquet-staging/blobs/",
+			"blobPathBeginsWith": "/parquet-staging/blobs/handy",
 			"ignoreEmptyBlobs": true,
 			"scope": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/Az900/providers/Microsoft.Storage/storageAccounts/mynewstorageacctdb",
 			"events": [
