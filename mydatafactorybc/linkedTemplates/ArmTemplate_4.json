@@ -574,7 +574,7 @@
 				],
 				"type": "BlobEventsTrigger",
 				"typeProperties": {
-					"blobPathBeginsWith": "/parquet-staging/blobs/",
+					"blobPathBeginsWith": "/parquet-staging/blobs/handy",
 					"ignoreEmptyBlobs": true,
 					"scope": "[parameters('trigger_new_parquet_file_properties_typeProperties_scope')]",
 					"events": [
