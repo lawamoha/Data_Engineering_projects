@@ -484,7 +484,7 @@
 				],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "Sales_LOAD"
+					"table": "handycandy"
 				}
 			},
 			"dependsOn": [
