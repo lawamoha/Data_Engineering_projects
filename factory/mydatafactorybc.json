@@ -5,7 +5,7 @@
 			"factoryStagingLSReferenceName": "ls_for_staging",
 			"factoryStagingLSType": "LinkedServiceReference",
 			"factoryStagingFolderPath": "staging",
-			"PipelineBillingEnabled": "false"
+			"PipelineBillingEnabled": "true"
 		}
 	},
 	"location": "eastus",
