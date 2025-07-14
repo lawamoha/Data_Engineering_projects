@@ -1,0 +1,21 @@
+{
+	"name": "sql_script_practice",
+	"properties": {
+		"description": "create an external table using a server less sql pool and external data source (txt)",
+		"folder": {
+			"name": "TEST PRACTICE RESEARCH"
+		},
+		"content": {
+			"query": "create database new;\ngo\n\nuse new\ngo;\n\ncreate master key encryption by password = 'mypass 988@';\ngo\n\nselect * from sys.symmetric_keys;\ngo\n\ncreate database scoped credential newcred\nwith identity = 'shared access signature' , \nsecret ='sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2025-07-02T23:17:31Z&st=2025-06-30T15:17:31Z&spr=https&sig=lzc%2FOIxyVCx7%2B9oB3QMZistnpfXu36nFmbKs4ylapNE%3D' ;\ngo\n\nselect * from sys.credentials;\ngo\n\n--drop external data source datasource\n\ncreate external data source datasource\nwith(\n\tlocation = 'https://mynewstorageacctdb.dfs.core.windows.net/source/landing/',\n\tcredential = newcred)\n\n--drop external file format fileformat\n\ncreate external file format fileformat\nwith(\n\tformat_type = delimitedtext,\n\tformat_options\n\t\t\t\t(field_terminator = ',',\n\t\t\t\t string_delimiter = '\"',\n\t\t\t\t first_row = 2,\n\t\t\t\t use_type_default = true\n\t\t\t\t  )\n)\n\n--drop external table JustOneMore\n\ncreate external table JustOneMore\n(SalesMonth nvarchar (50),\nRetailer nvarchar(20),\nProduct nvarchar (50),\nSalesValueUSD float,\nUnitsSold int\n)\nwith (\n\tlocation = 'Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData/JustOneMore/SalesData/Apr-2020.txt',\n\tdata_source = datasource,\n\tfile_format = fileformat\n)",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "new",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

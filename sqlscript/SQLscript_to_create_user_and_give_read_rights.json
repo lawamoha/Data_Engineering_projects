@@ -1,0 +1,21 @@
+{
+	"name": "SQLscript_to_create_user_and_give_read_rights",
+	"properties": {
+		"description": "create a user\ncheck principles\nGive read rights",
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2"
+		},
+		"content": {
+			"query": "\n--create a user\n\n \n-- Which database?\nUSE sqltips;\nGO\n \n-- What are the principles\nSELECT * FROM sys.database_principals where (type='S' or type = 'U')\nGO\n \n-- Drop user\nDROP USER [Abolade];\nGO\n \n-- Create user\nCREATE USER [Abolade] FROM LOGIN [Abolade];\nGO\n \n-- Give read rights\nALTER ROLE db_datareader ADD MEMBER [Abolade];\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sqltips",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

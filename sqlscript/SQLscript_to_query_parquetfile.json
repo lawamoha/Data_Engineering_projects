@@ -1,0 +1,20 @@
+{
+	"name": "SQLscript_to_query_parquetfile",
+	"properties": {
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2"
+		},
+		"content": {
+			"query": "-- This is auto-generated code\nSELECT\n    TOP 20 *\nFROM\n    OPENROWSET(\n        BULK 'https://satestdebc.dfs.core.windows.net/synapse/parquet-files/DimCurrency.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

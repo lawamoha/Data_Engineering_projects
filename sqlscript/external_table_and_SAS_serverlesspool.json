@@ -1,0 +1,20 @@
+{
+	"name": "external_table_and_SAS_serverlesspool",
+	"properties": {
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject1"
+		},
+		"content": {
+			"query": "CREATE DATABASE companydb\n\nUSE companydb\n\nCREATE MASTER KEY ENCRYPTION BY PASSWORD = 'Test@1';\n\nCREATE DATABASE SCOPED CREDENTIAL SAS_TOKEN\nWITH IDENTITY = 'SHARED ACCESS SIGNATURE',\nSECRET = 'sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2025-05-22T05:04:21Z&st=2025-05-17T21:04:21Z&spr=https&sig=%2FpzXa%2FIWS89%2F%2Fhp%2FOGXdq9dz%2FVZqerm5yxW0dRHWKH8%3D'\n\nCREATE EXTERNAL DATA SOURCE enterpriselake\nWITH (\n    LOCATION = 'https://storagededls.dfs.core.windows.net/',\n    CREDENTIAL = SAS_TOKEN\n    )\n GO;\n \nSELECT *\nFROM OPENROWSET(\n    BULK '/data-types/csvfile/sales.csv',\n    DATA_SOURCE = 'enterpriselake',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    HEADER_ROW = TRUE\n)AS sales;\n\n--DROP EXTERNAL DATA SOURCE enterpriselake\n\n--DROP DATABASE SCOPED CREDENTIAL CREDENTIAL;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "companydb",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

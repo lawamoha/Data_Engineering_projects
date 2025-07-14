@@ -1,0 +1,20 @@
+{
+	"name": "SQL_Script_Define_Test_Database",
+	"properties": {
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2"
+		},
+		"content": {
+			"query": "--\n-- 0 – Simple environment queries\n--\n \n-- Switch database\nUSE master;\nGO\n \n-- Who am I logged in as?\nSELECT CURRENT_USER as CUR_USER, SYSTEM_USER as SYS_USER;\nGO\n \n-- What are the database names?\nSELECT * FROM sys.databases;\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"name": "SQLscript_to_query_csvfile",
+	"properties": {
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2"
+		},
+		"content": {
+			"query": "-- This is auto-generated code\nSELECT\n    TOP 10 *\nFROM\n    OPENROWSET(\n        BULK 'https://satestdebc.dfs.core.windows.net/synapse/csv-files/DimCurrency.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        FIELDTERMINATOR = '|',\n        FIRST_ROW = 1,\n        HEADER_ROW = FALSE\n        )\n\n    WITH \n    (\n        CurrencyKey INT,\n        CurrencyAlias VARCHAR (3),\n        Curreny VARCHAR (50)\n    )\n    AS [result]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

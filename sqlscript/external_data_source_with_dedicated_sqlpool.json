@@ -1,0 +1,21 @@
+{
+	"name": "external_data_source_with_dedicated_sqlpool",
+	"properties": {
+		"description": "Create an external Data Source with Dedicated SQL Pool \nCreating tables and loading data",
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject1"
+		},
+		"content": {
+			"query": "/*USE companydb\nGO (will not work for serverless sql server);*/\n\n-----------------------------------CREATE TABLES FOR SALES, PRODUCTS AND CUSTOMERS\nCREATE TABLE dbo.Sales ( sale_id INT, product_id INT, customer_id INT, quantity INT, price FLOAT, sale_date DATE );\nCREATE TABLE dbo.Products ( product_id INT, name NVARCHAR(100), category NVARCHAR(100) );\nCREATE TABLE dbo.Customers ( customer_id INT, name NVARCHAR(100), email NVARCHAR(100) );\n\n\n\n----------------------------------COPY DATA INTO NEW TABLES FROM ADLS ACCOUNT\nCOPY INTO dbo.Products\nFROM 'https://storagededls.blob.core.windows.net/data-types/csvfile/products.csv'\nWITH (\n FILE_TYPE = 'CSV',\n CREDENTIAL = (IDENTITY= 'Shared Access Signature', SECRET='sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2025-05-22T05:04:21Z&st=2025-05-17T21:04:21Z&spr=https&sig=%2FpzXa%2FIWS89%2F%2Fhp%2FOGXdq9dz%2FVZqerm5yxW0dRHWKH8%3D'),\nFIELDTERMINATOR = ',',\nROWTERMINATOR = '0x0A',\nFIRSTROW = 2\n);\n\nCOPY INTO dbo.Customers\nFROM 'https://storagededls.blob.core.windows.net/data-types/csvfile/customers.csv'\nWITH (\n FILE_TYPE = 'CSV',\n CREDENTIAL = (IDENTITY = 'Shared Access Signature', SECRET = 'sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2025-05-22T05:04:21Z&st=2025-05-17T21:04:21Z&spr=https&sig=%2FpzXa%2FIWS89%2F%2Fhp%2FOGXdq9dz%2FVZqerm5yxW0dRHWKH8%3D'),\nFIELDTERMINATOR = ',',\nROWTERMINATOR = '0x0A',\nFIRSTROW = 2\n);\n\nCOPY INTO dbo.Sales\nFROM 'https://storagededls.blob.core.windows.net/data-types/csvfile/sales.csv'\nWITH (\n FILE_TYPE = 'CSV',\n CREDENTIAL = (IDENTITY = 'Shared Access Signature', SECRET = 'sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2025-05-22T05:04:21Z&st=2025-05-17T21:04:21Z&spr=https&sig=%2FpzXa%2FIWS89%2F%2Fhp%2FOGXdq9dz%2FVZqerm5yxW0dRHWKH8%3D'),\nFIELDTERMINATOR = ',',\nROWTERMINATOR = '0x0A',\nFIRSTROW = 2\n);\n\nSELECT * FROM dbo.Products;\nSELECT * FROM dbo.Customers;\nSELECT * FROM dbo.Sales;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dedicatedpool_1",
+				"poolName": "dedicatedpool_1"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

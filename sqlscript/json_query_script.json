@@ -1,0 +1,20 @@
+{
+	"name": "json_query_script",
+	"properties": {
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2/Json_Scripts"
+		},
+		"content": {
+			"query": "\nSELECT \n    JSON_VALUE('{\"orderId\":\"4567\"}', '$.orderId') AS orderId,\n    JSON_VALUE('{\"orderDate\":\"2022-04-28\"}', '$.orderDate') AS orderDate,\n    JSON_VALUE('{\"orderSource\":\"webstore\"}', '$.orderSource') AS orderSource,\n    JSON_VALUE('{\"customerDevice\":\"android\"}', '$.customerDevice') AS customerDevice\n\nFROM\n    OPENROWSET(\n        BULK 'https://satestdebc.dfs.core.windows.net/synapse/json-files/sales.json',\n        FORMAT = 'CSV',\n        FIELDQUOTE = '0x0b',\n        FIELDTERMINATOR ='0x0b',\n        ROWTERMINATOR = '0x0b'\n    )\n    WITH (\n        jsonContent varchar(MAX)\n    ) AS [result]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

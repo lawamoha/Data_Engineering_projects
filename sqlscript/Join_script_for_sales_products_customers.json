@@ -1,0 +1,21 @@
+{
+	"name": "Join_script_for_sales_products_customers",
+	"properties": {
+		"description": "Join script for all three tables",
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject1"
+		},
+		"content": {
+			"query": "SELECT s.sale_id, c.name AS customer_name, c.email, p.name AS product_name, p.category, s.quantity, s.price, (s.quantity * s.price) AS total_price, s.sale_date\nFROM dbo.Sales AS s \nJOIN dbo.Products AS p\n ON s.product_id = p.product_id\nJOIN dbo.Customers AS c\n ON s.customer_id = c.customer_id",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

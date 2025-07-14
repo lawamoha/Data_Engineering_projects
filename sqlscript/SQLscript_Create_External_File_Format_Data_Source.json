@@ -1,0 +1,21 @@
+{
+	"name": "SQLscript_Create_External_File_Format_Data_Source",
+	"properties": {
+		"description": "-SQL script to create external file format and external data source without database scoped credential. \n\n- Depends on managed identity having access to adls gen2 account/container",
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2"
+		},
+		"content": {
+			"query": "USE master;\nGO\n\nDROP DATABASE IF EXISTS mssqltips;\nGO\n\nCREATE DATABASE mssqltips;\nGO\n\nUSE mssqltips;\nGO\n\nCREATE EXTERNAL DATA SOURCE DataLakeSource\nWITH(\n    LOCATION = 'abfss://synapse@satestdebc.dfs.core.windows.net/'\n);\nGO\n\n-- Delimited external file format\n\nCREATE EXTERNAL FILE FORMAT DelimitedFile\nWITH (\n    FORMAT_TYPE = DELIMITEDTEXT,\n    FORMAT_OPTIONS\n        ( FIELD_TERMINATOR ='|',\n          USE_TYPE_DEFAULT = FALSE\n        )\n);\nGO\n\n-- Parquet external file format\n\nCREATE EXTERNAL FILE FORMAT ParquetFile\nWITH (\n    FORMAT_TYPE = PARQUET\n);\nGO\n\n -- Create external table\n\n \n-- Drop old table\nDROP EXTERNAL TABLE dim_currency;\nGO\n \n-- Create new table\nCREATE EXTERNAL TABLE dim_currency\n(\n        CurrencyKey int,\n   CurrencyAlternateKey nvarchar(3),\n   CurrencyName nvarchar(50)\n)\nWITH\n(\n   LOCATION = '/csv-files/DimCurrency.csv',\n   DATA_SOURCE = DataLakeSource,\n   FILE_FORMAT = DelimitedFile\n)\nGO\n\n-- Drop old table\nDROP EXTERNAL TABLE fact_internet_sales;\nGO\n\n-- Create external table\n\nCREATE EXTERNAL TABLE fact_internet_sales\n(\n   [ProductKey] [int],\n   [OrderDateKey] [int],\n   [DueDateKey] [int],\n   [ShipDateKey] [int],\n   [CustomerKey] [int],\n   [PromotionKey] [int],\n   [CurrencyKey] [int],\n   [SalesTerritoryKey] [int],\n   [SalesOrderNumber] [nvarchar](20),\n   [SalesOrderLineNumber] [tinyint],\n   [RevisionNumber] [tinyint],\n   [OrderQuantity] [smallint],\n   [UnitPrice] [money],\n   [ExtendedAmount] [money],\n   [UnitPriceDiscountPct] DECIMAL(19, 4),\n   [DiscountAmount] DECIMAL(19, 4),\n   [ProductStandardCost] [money],\n   [TotalProductCost] [money],\n   [SalesAmount] [money],\n   [TaxAmt] [money],\n   [Freight] [money],\n   [CarrierTrackingNumber] [nvarchar](25),\n   [CustomerPONumber] [nvarchar](25),\n   [OrderDate] [datetime],\n   [DueDate] [datetime],\n   [ShipDate] [datetime]\n)\nWITH\n(\n   LOCATION = '/parquet-files/FactInternetSales/**',\n   DATA_SOURCE = DataLakeSource,\n   FILE_FORMAT = ParquetFile\n)\nGO\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "mssqltips",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

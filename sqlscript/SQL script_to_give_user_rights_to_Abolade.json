@@ -1,0 +1,20 @@
+{
+	"name": "SQL script_to_give_user_rights_to_Abolade",
+	"properties": {
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2"
+		},
+		"content": {
+			"query": "--\n--give user rights to credential\n--\n \n-- Give rights to credential\nGRANT CONTROL ON DATABASE SCOPED CREDENTIAL :: [LakeCredential] TO [Abolade];\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sqltips",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

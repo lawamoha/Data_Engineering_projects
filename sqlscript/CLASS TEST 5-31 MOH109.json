@@ -1,0 +1,20 @@
+{
+	"name": "CLASS TEST 5-31 MOH109",
+	"properties": {
+		"folder": {
+			"name": "TEST PRACTICE RESEARCH"
+		},
+		"content": {
+			"query": "DROP EXTERNAL DATA SOURCE Datasource\n\nCREATE EXTERNAL DATA SOURCE [Datasource]\nWITH (\t\nLOCATION = 'abfss://synapse@satestdebc.dfs.core.windows.net/data')\nGO\n\nDROP EXTERNAL FILE FORMAT FileFormat1\n\nCREATE EXTERNAL FILE FORMAT [FileFormat1]\nWITH \n( \n   FORMAT_TYPE = DELIMITEDTEXT ,\n   FORMAT_OPTIONS \n   (\n      FIELD_TERMINATOR = ',',\n      USE_TYPE_DEFAULT = FALSE\n   )\n)\nGO\n\n\nCREATE TABLE Customers( CUSTOMERID int,FIRSTNAME NVARCHAR (10),LASTNAME NVARCHAR(10),REGIONID NVARCHAR (10));\nCREATE TABLE Products ( PRODUCTID INT, PRODUCTNAME VARCHAR (10), CATEGORY NVARCHAR(20), PRICE INT);\nCREATE TABLE Region (REGIONID NVARCHAR (10), REGIONNAME NVARCHAR (10));\nCREATE TABLE Sales (SALEID INT,PRODUCTID INT, CUSTOMERID INT, QUANTITY INT);\n\n\nCOPY INTO dbo.Customers\nFROM 'https://satestdebc.dfs.core.windows.net/synapse/data/customers.csv'\nWITH (\n FILE_TYPE = 'CSV',\n CREDENTIAL = (IDENTITY= 'Shared Access Signature', SECRET='sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2025-06-08T02:15:11Z&st=2025-05-31T18:15:11Z&spr=https&sig=TZQy11oh2RM4EEF7wYWX68i18L2cWIufOY41vmnmK0o%3D'),\nFIELDTERMINATOR = ',',\nROWTERMINATOR = '0x0A',\nFIRSTROW = 2\n);\n\nCOPY INTO dbo.Products\nFROM 'https://satestdebc.dfs.core.windows.net/synapse/data/products.csv'\nWITH (\n FILE_TYPE = 'CSV',\n CREDENTIAL = (IDENTITY= 'Shared Access Signature', SECRET='sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2025-06-08T02:15:11Z&st=2025-05-31T18:15:11Z&spr=https&sig=TZQy11oh2RM4EEF7wYWX68i18L2cWIufOY41vmnmK0o%3D'),\nFIELDTERMINATOR = ',',\nROWTERMINATOR = '0x0A',\nFIRSTROW = 2\n);\n\nCOPY INTO dbo.Region\nFROM 'https://satestdebc.dfs.core.windows.net/synapse/data/region.csv'\nWITH (\n FILE_TYPE = 'CSV',\n CREDENTIAL = (IDENTITY= 'Shared Access Signature', SECRET='sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2025-06-08T02:15:11Z&st=2025-05-31T18:15:11Z&spr=https&sig=TZQy11oh2RM4EEF7wYWX68i18L2cWIufOY41vmnmK0o%3D'),\nFIELDTERMINATOR = ',',\nROWTERMINATOR = '0x0A',\nFIRSTROW = 2\n);\n\nCOPY INTO dbo.Sales\nFROM 'https://satestdebc.dfs.core.windows.net/synapse/data/sales.csv'\nWITH (\n FILE_TYPE = 'CSV',\n CREDENTIAL = (IDENTITY= 'Shared Access Signature', SECRET='sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2025-06-08T02:15:11Z&st=2025-05-31T18:15:11Z&spr=https&sig=TZQy11oh2RM4EEF7wYWX68i18L2cWIufOY41vmnmK0o%3D'),\nFIELDTERMINATOR = ',',\nROWTERMINATOR = '0x0A',\nFIRSTROW = 2\n);\n\n\nSELECT \nCONCAT (C.FIRSTNAME,' ',C.LASTNAME) AS NAME,\nR.REGIONNAME,\nP.PRODUCTNAME,\nS.QUANTITY,\nP.PRICE,\n(S.QUANTITY * P.PRICE) AS TOTALAMOUNT\n\nFROM Products AS P\nJOIN Sales AS S\nON P.PRODUCTID = S.PRODUCTID\nJOIN Customers AS C\nON C.CUSTOMERID = S.CUSTOMERID\nLEFT JOIN Region AS R\nON R.REGIONID = C.REGIONID \n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "testdedsql",
+				"poolName": "testdedsql"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

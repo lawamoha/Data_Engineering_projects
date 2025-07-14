@@ -1,0 +1,21 @@
+{
+	"name": "Josn_query_jsoncontent",
+	"properties": {
+		"description": "script to query a Json file using jsonvalues and openrowset from an external data source",
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2/Json_Scripts"
+		},
+		"content": {
+			"query": "-- This is auto-generated code\nSELECT TOP 100\n   --jsonContent\n/* --> place the keys that you see in JSON documents in the WITH clause:*/\n        JSON_VALUE (jsonContent, '$.Month') AS Month\n       ,JSON_VALUE (jsonContent, '$.Company') AS Company\n       ,JSON_VALUE (jsonContent, '$.Sales[0].Product') AS SalesProduct\n       ,JSON_VALUE (jsonContent, '$.Sales[1].ManufacturerProductCode') AS ManufacturerProductCode\n       ,JSON_VALUE (jsonContent, '$.Sales[0].Units') AS Units\n\nFROM\n    OPENROWSET(\n        BULK 'https://mynewstorageacctdb.dfs.core.windows.net/source/landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData/SugarCube/2020/Q2/April.json',\n        FORMAT = 'CSV',\n        FIELDQUOTE = '0x0b',\n        FIELDTERMINATOR ='0x0b',\n        ROWTERMINATOR = '0x0b'\n    )\n    WITH (\n        jsonContent varchar(MAX)\n    ) AS [result]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

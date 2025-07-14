@@ -1,0 +1,20 @@
+{
+	"name": "SQLscript_to_query json_using_JSON_VALUE",
+	"properties": {
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject1"
+		},
+		"content": {
+			"query": "\nSELECT TOP 100 \n        JSON_VALUE (jsonContent,'$.product_id') AS C1\n       , JSON_VALUE (jsonContent,'$.name') AS C2\n       ,JSON_VALUE (jsonContent,'$.category') AS C3\n\nFROM\n    OPENROWSET(\n        BULK 'https://storagededls.dfs.core.windows.net/data-types/jsonfile/products.json',\n        FORMAT = 'CSV',\n        FIELDQUOTE = '0x0b',\n        FIELDTERMINATOR ='0x0b',\n        ROWTERMINATOR = '0x0a'\n    )\n    WITH (\n        jsonContent varchar(MAX)\n    ) AS [result]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

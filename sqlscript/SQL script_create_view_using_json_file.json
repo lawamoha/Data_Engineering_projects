@@ -1,0 +1,21 @@
+{
+	"name": "SQL script_create_view_using_json_file",
+	"properties": {
+		"description": "script to create view using json file",
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2/Json_Scripts"
+		},
+		"content": {
+			"query": "CREATE VIEW [dbo].[vw_product_json]\n\tAS \nSELECT \n       JSON_VALUE (jsonContent, '$.id') AS ID,\n       JSON_VALUE (jsonContent, '$.productname')AS ProductName,\n       JSON_VALUE (jsonContent, '$.productnumber') AS ProductNumber,\n       JSON_VALUE (jsonContent, '$.color') AS Color,\n       JSON_VALUE (jsonContent, '$.size') AS Size,\n       JSON_VALUE (jsonContent, '$.weight') AS Weight,\n       JSON_VALUE (jsonContent, '$.quantityinstock') AS Quantityinstock,\n       JSON_VALUE (jsonContent, '$.model') AS model,\n       JSON_VALUE (jsonContent, '$.description') AS Description,\n       JSON_VALUE (jsonContent, '$.productcategory.subcategory') AS Subcategory,\n       JSON_VALUE (jsonContent, '$.productcategory.category') AS category\n\nFROM\n    OPENROWSET(\n        BULK 'https://satestdebc.dfs.core.windows.net/synapse/json-files/product1.json',\n        FORMAT = 'CSV',\n        FIELDQUOTE = '0x0b',\n        FIELDTERMINATOR ='0x0b',\n        ROWTERMINATOR = '0x0b'\n    )\n    WITH (\n        jsonContent varchar(MAX)\n    ) AS [result]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "mssqltips",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

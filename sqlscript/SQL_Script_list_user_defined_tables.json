@@ -1,0 +1,21 @@
+{
+	"name": "SQL_Script_list_user_defined_tables",
+	"properties": {
+		"description": "query the system tables to obtain a list of our user-defined tables.",
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2"
+		},
+		"content": {
+			"query": "\n \nSELECT\n    S.NAME AS schema_nm,\n    O.NAME AS table_nm,\n    O.type,\n    O.type_desc,\n    O.create_date\nFROM\n    SYS.SCHEMAS S JOIN SYS.OBJECTS O\nON\n    S.SCHEMA_ID = O.SCHEMA_ID\nWHERE\n    IS_MS_SHIPPED = 0;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sqltips",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

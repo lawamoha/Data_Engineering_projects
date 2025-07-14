@@ -1,0 +1,20 @@
+{
+	"name": "SQL_script_to_create_view",
+	"properties": {
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2"
+		},
+		"content": {
+			"query": "--\n---------– Create a view\n--DROP VIEW [saleslt].rpt_prepared_data\n\nCREATE VIEW [saleslt].rpt_prepared_data\nAS\nSELECT\n   pc.EnglishProductCategoryName\n  ,Coalesce(p.ModelName, p.EnglishProductName) AS Model\n  ,c.CustomerKey\n  ,s.SalesTerritoryGroup AS Region\n  ,DATEDIFF(DAY, c.BirthDate, current_timestamp) / 365.25 AS Age\n  ,CASE\n      WHEN c.YearlyIncome < 40000 THEN 'Low'\n      WHEN c.YearlyIncome > 60000 THEN 'High'\n      ELSE 'Moderate'\n  END AS IncomeGroup\n  ,d.CalendarYear\n  ,d.FiscalYear\n  ,d.MonthNumberOfYear AS Month\n  ,f.SalesOrderNumber AS OrderNumber\n  ,f.SalesOrderLineNumber AS LineNumber\n  ,f.OrderQuantity AS Quantity\n  ,f.ExtendedAmount AS Amount\nFROM\n  [saleslt].fact_internet_sales as f\nINNER JOIN\n  [saleslt].dim_date as d\nON\n  f.OrderDateKey = d.DateKey\n \nINNER JOIN\n  [saleslt].dim_product as p\nON\n  f.ProductKey = p.ProductKey\n  \nINNER JOIN\n  [saleslt].dim_product_subcategory as psc\nON\n  p.ProductSubcategoryKey = psc.ProductSubcategoryKey\n \nINNER JOIN\n  [saleslt].dim_product_category as pc\nON\n  psc.ProductCategoryKey = pc.ProductCategoryKey\n  \nINNER JOIN \n  [saleslt].dim_customer as c\nON\n  f.CustomerKey = c.CustomerKey\n \nINNER JOIN\n  [saleslt].dim_geography as g\nON\n  c.GeographyKey = g.GeographyKey\n \nINNER JOIN\n  [saleslt].dim_sales_territory as s\nON\n  g.SalesTerritoryKey = s.SalesTerritoryKey\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sqltips",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

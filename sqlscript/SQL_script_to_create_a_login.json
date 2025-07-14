@@ -1,0 +1,20 @@
+{
+	"name": "SQL_script_to_create_a_login",
+	"properties": {
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2"
+		},
+		"content": {
+			"query": "--\n-- create a login\n \n-- Which database?\nUSE master;\nGO\n \n-- Drop login\nDROP LOGIN [Abolade]\n \n-- Create login\nCREATE LOGIN [Abolade] WITH PASSWORD = 'mypasswordtest@123', DEFAULT_DATABASE = sqltips;\nGO\n \n-- Show logins\nSELECT * FROM sys.sql_logins\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

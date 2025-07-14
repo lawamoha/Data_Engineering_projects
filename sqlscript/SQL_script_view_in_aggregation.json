@@ -1,0 +1,21 @@
+{
+	"name": "SQL_script_view_in_aggregation",
+	"properties": {
+		"description": "The T-SQL below summarizes sales by year, month, region, and model number. Given this information, the sales manager can see what products are being sold monthly.",
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject2"
+		},
+		"content": {
+			"query": "\n--Use view in aggregation\n \nSELECT\n  CalendarYear as RptYear,\n  Month as RptMonth,\n  Region as RptRegion,\n  Model as ModelNo,\n  SUM(Quantity) as TotalQty,\n  SUM(Amount) as TotalAmt\nFROM\n  [saleslt].rpt_prepared_data\nGROUP BY\n  CalendarYear,\n  Month,\n  Region,\n  Model\nORDER BY\n  CalendarYear,\n  Month,\n  Region;\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sqltips",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

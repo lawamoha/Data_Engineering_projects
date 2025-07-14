@@ -1,0 +1,21 @@
+{
+	"name": "SQL_QUERY_EXT_JSON_FILE",
+	"properties": {
+		"description": "SQL script to query json file on an external storage using external data source",
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject1"
+		},
+		"content": {
+			"query": "\nSELECT TOP 10 JSON_DOC \nFROM OPENROWSET(\n    BULK '/data-types/jsonfile/sales.json',\n    DATA_SOURCE = 'enterpriselake',\n    FORMAT = 'CSV',\n    FIELDTERMINATOR = '0X0B',\n    FIELDQUOTE = '0x0B',\n    ROWTERMINATOR = '0X0B'\n)  WITH (JSON_DOC nvarchar(max)) AS RESULT",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "companydb",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

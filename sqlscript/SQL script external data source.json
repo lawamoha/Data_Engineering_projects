@@ -1,0 +1,21 @@
+{
+	"name": "SQL script external data source",
+	"properties": {
+		"description": "establish a connection with external data source and query data in the bronze folder\nadlsaccount",
+		"folder": {
+			"name": "DE-Boot-Camp/DeProject1"
+		},
+		"content": {
+			"query": "CREATE DATABASE MOH\nUSE MOH\nCREATE MASTER KEY ENCRYPTION BY PASSWORD = 'qwerty@1'\nCREATE DATABASE SCOPED CREDENTIAL mohammed\nWITH IDENTITY = 'SHARED ACCESS SIGNATURE',\nSECRET ='sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2025-05-20T04:06:18Z&st=2025-05-19T20:06:18Z&spr=https&sig=UYEaYAHaslxsRw%2BSbZTnSd%2FSy8Ao2fN1NRoZ6MyeHvY%3D';\n\nCREATE EXTERNAL DATA SOURCE moh\nWITH(\n    LOCATION = 'https://mynewstorageacctdb.blob.core.windows.net/source/bronze',\n    CREDENTIAL = mohammed\n)\n\nSELECT TOP 5 customer_id, customer_city, customer_state\nFROM\nOPENROWSET(\n    BULK 'olist_customer',\n    DATA_SOURCE = 'moh',\n    FORMAT ='CSV',\n    PARSER_VERSION ='2.0',\n    HEADER_ROW = TRUE\n) AS olistcustomer\nORDER BY customer_city DESC\n\n--DROP EXTERNAL DATA SOURCE moh\n--DROP DATABASE SCOPED CREDENTIAL mohammed\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "MOH",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
