@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics1'"
 		},
+		"Dynamic linked service_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Dynamic linked service'"
+		},
 		"LS_COPY_HIVDATA_BLOB_SERVICE_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_COPY_HIVDATA_BLOB_SERVICE'"
@@ -50,6 +54,10 @@
 		"ls_asqldb_dbebootcamp1_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_asqldb_dbebootcamp1'"
+		},
+		"ls_cosmosdb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_cosmosdb'"
 		},
 		"ls_for_staging_accountKey": {
 			"type": "secureString",
@@ -96,6 +104,18 @@
 			"defaultValue": "dedsqlpool"
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqldeuser"
+		},
+		"Dynamic linked service_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"Dynamic linked service_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "@{linkedService().db_name}"
+		},
+		"Dynamic linked service_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "sqldeuser"
 		},
@@ -260,6 +280,33 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Dynamic linked service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"db_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('Dynamic linked service_properties_typeProperties_server')]",
+					"database": "[parameters('Dynamic linked service_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('Dynamic linked service_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('Dynamic linked service_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/LS_COPY_HIVDATA_BLOB_SERVICE')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -377,6 +424,19 @@
 						"type": "SecureString",
 						"value": "[parameters('ls_asqldb_dbebootcamp1_password')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_cosmosdb')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CosmosDb",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_cosmosdb_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -542,55 +602,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ADLS linked service')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Ds_Salesltproduct_Parquet')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_TO_COPY_HIV_DATA_INTO_ADLS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "salesltproducts.parquet",
-						"fileSystem": "landing"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_TO_COPY_HIV_DATA_INTO_ADLS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Ds_Salesltproducts_Avro')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_TO_COPY_HIV_DATA_INTO_ADLS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Avro",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "salesltproducts.avro",
-						"fileSystem": "landing"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_TO_COPY_HIV_DATA_INTO_ADLS')]"
 			]
 		}
 	]

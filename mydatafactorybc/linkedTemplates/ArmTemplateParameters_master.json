@@ -20,6 +20,9 @@
 		"AzureSynapseAnalytics1_password": {
 			"value": ""
 		},
+		"Dynamic linked service_password": {
+			"value": ""
+		},
 		"LS_COPY_HIVDATA_BLOB_SERVICE_connectionString": {
 			"value": ""
 		},
@@ -36,6 +39,9 @@
 			"value": ""
 		},
 		"ls_asqldb_dbebootcamp1_password": {
+			"value": ""
+		},
+		"ls_cosmosdb_connectionString": {
 			"value": ""
 		},
 		"ls_for_staging_accountKey": {
@@ -72,6 +78,15 @@
 			"value": "dedsqlpool"
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
+			"value": "sqldeuser"
+		},
+		"Dynamic linked service_properties_typeProperties_server": {
+			"value": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"Dynamic linked service_properties_typeProperties_database": {
+			"value": "@{linkedService().db_name}"
+		},
+		"Dynamic linked service_properties_typeProperties_userName": {
 			"value": "sqldeuser"
 		},
 		"LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url": {

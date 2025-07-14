@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics1'"
 		},
+		"Dynamic linked service_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Dynamic linked service'"
+		},
 		"LS_COPY_HIVDATA_BLOB_SERVICE_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_COPY_HIVDATA_BLOB_SERVICE'"
@@ -50,6 +54,10 @@
 		"ls_asqldb_dbebootcamp1_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_asqldb_dbebootcamp1'"
+		},
+		"ls_cosmosdb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_cosmosdb'"
 		},
 		"ls_for_staging_accountKey": {
 			"type": "secureString",
@@ -96,6 +104,18 @@
 			"defaultValue": "dedsqlpool"
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqldeuser"
+		},
+		"Dynamic linked service_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"Dynamic linked service_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "@{linkedService().db_name}"
+		},
+		"Dynamic linked service_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "sqldeuser"
 		},
@@ -205,6 +225,9 @@
 					"AzureSynapseAnalytics1_password": {
 						"value": "[parameters('AzureSynapseAnalytics1_password')]"
 					},
+					"Dynamic linked service_password": {
+						"value": "[parameters('Dynamic linked service_password')]"
+					},
 					"LS_COPY_HIVDATA_BLOB_SERVICE_connectionString": {
 						"value": "[parameters('LS_COPY_HIVDATA_BLOB_SERVICE_connectionString')]"
 					},
@@ -222,6 +245,9 @@
 					},
 					"ls_asqldb_dbebootcamp1_password": {
 						"value": "[parameters('ls_asqldb_dbebootcamp1_password')]"
+					},
+					"ls_cosmosdb_connectionString": {
+						"value": "[parameters('ls_cosmosdb_connectionString')]"
 					},
 					"ls_for_staging_accountKey": {
 						"value": "[parameters('ls_for_staging_accountKey')]"
@@ -258,6 +284,15 @@
 					},
 					"AzureSynapseAnalytics1_properties_typeProperties_userName": {
 						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_userName')]"
+					},
+					"Dynamic linked service_properties_typeProperties_server": {
+						"value": "[parameters('Dynamic linked service_properties_typeProperties_server')]"
+					},
+					"Dynamic linked service_properties_typeProperties_database": {
+						"value": "[parameters('Dynamic linked service_properties_typeProperties_database')]"
+					},
+					"Dynamic linked service_properties_typeProperties_userName": {
+						"value": "[parameters('Dynamic linked service_properties_typeProperties_userName')]"
 					},
 					"LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url": {
 						"value": "[parameters('LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url')]"
