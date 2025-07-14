@@ -44,17 +44,44 @@
 				"inputs": [
 					{
 						"referenceName": "ds_dynamic_tables",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"Table_Name": {
+								"value": "@pipeline().parameters.Table_Name",
+								"type": "Expression"
+							},
+							"Schema_Name": {
+								"value": "@pipeline().parameters.Schema_Name",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "ds_saleslt_dynamic_copy",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"File_Name": {
+								"value": "@concat(pipeline().parameters.File_Name,'-',utcNow(),'.csv')",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			}
 		],
+		"parameters": {
+			"Table_Name": {
+				"type": "string"
+			},
+			"File_Name": {
+				"type": "string"
+			},
+			"Schema_Name": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "pipeline_tutorial"
 		},
