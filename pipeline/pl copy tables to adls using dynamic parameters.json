@@ -1,5 +1,5 @@
 {
-	"name": "pl copy tables to adls usind dynamic parameters",
+	"name": "pl copy tables to adls using dynamic parameters",
 	"properties": {
 		"activities": [
 			{
