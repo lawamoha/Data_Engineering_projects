@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "Data Flow Silver to Gold",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
