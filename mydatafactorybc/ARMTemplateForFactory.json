@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics1'"
 		},
+		"AzureSynapseAnalytics2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSynapseAnalytics2'"
+		},
 		"Dynamic linked service_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Dynamic linked service'"
@@ -58,10 +62,6 @@
 		"ls_for_staging_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_for_staging'"
-		},
-		"ls_mydedsqlpool_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'ls_mydedsqlpool'"
 		},
 		"ls_newstorageaccount_accountKey": {
 			"type": "secureString",
@@ -101,15 +101,15 @@
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_server": {
 			"type": "string",
-			"defaultValue": "sqlserverdebootcamp01.database.windows.net"
+			"defaultValue": "desynapsespace.sql.azuresynapse.net"
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_database": {
 			"type": "string",
-			"defaultValue": "dedsqlpool"
+			"defaultValue": "pool"
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
 			"type": "string",
-			"defaultValue": "sqldeuser"
+			"defaultValue": "sqladminuser"
 		},
 		"Dynamic linked service_properties_typeProperties_server": {
 			"type": "string",
@@ -167,18 +167,6 @@
 			"type": "string",
 			"defaultValue": "https://adlsforstaging.dfs.core.windows.net/"
 		},
-		"ls_mydedsqlpool_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "desynapsespace.sql.azuresynapse.net"
-		},
-		"ls_mydedsqlpool_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "mydedsqlpool"
-		},
-		"ls_mydedsqlpool_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "sqladminuser"
-		},
 		"ls_newstorageaccount_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
@@ -204,6 +192,59 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Aggregate_sales_to_Gold')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data Flow Silver to Gold",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Dataflow Cleaned Silver to Gold",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"CleanedDessert4all": {},
+									"sqlpool": {}
+								}
+							},
+							"staging": {
+								"linkedService": {
+									"referenceName": "ls_for_staging",
+									"type": "LinkedServiceReference"
+								},
+								"folderPath": "staging"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Dataflow Cleaned Silver to Gold')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_for_staging')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/MongoDB JSON to CSV ADLS')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -524,6 +565,142 @@
 				"[concat(variables('factoryId'), '/datasets/datalakestorage')]",
 				"[concat(variables('factoryId'), '/datasets/MySqlTable1')]",
 				"[concat(variables('factoryId'), '/datasets/sqltocsv')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Pipeline_Sales_To_Gold')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "pl_Ingest_Sales_To_Bronze",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_Ingest_Sales_To_Bronze",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Pl_Transform_Sales_To_Silver",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "pl_Ingest_Sales_To_Bronze",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Pl_Transform_Sales_To_Silver",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Pl_Aggregate_Sales_To_Gold",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Pl_Transform_Sales_To_Silver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Pl_Aggregate_Sales_To_Gold",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_Ingest_Sales_To_Bronze')]",
+				"[concat(variables('factoryId'), '/pipelines/Pl_Transform_Sales_To_Silver')]",
+				"[concat(variables('factoryId'), '/pipelines/Pl_Aggregate_Sales_To_Gold')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Pl_Aggregate_Sales_To_Gold')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data Flow Silver To Gold",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Dataflow Cleaned Silver to Gold",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"CleanedDessert4all": {},
+									"sqlpool": {}
+								}
+							},
+							"staging": {
+								"linkedService": {
+									"referenceName": "ls_for_staging",
+									"type": "LinkedServiceReference"
+								},
+								"folderPath": "staging"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Dataflow Cleaned Silver to Gold')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_for_staging')]"
 			]
 		},
 		{
@@ -1027,7 +1204,7 @@
 							"enableLogging": true,
 							"storeSettings": {
 								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
+								"recursive": false,
 								"enablePartitionDiscovery": false
 							}
 						}
@@ -2567,80 +2744,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_t_copy_csv_to_ded_sql')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy csv to ded sql",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "SqlDWSink",
-								"allowCopyCommand": true,
-								"copyCommandSettings": {},
-								"tableOption": "autoCreate",
-								"disableMetricsCollection": false
-							},
-							"enableStaging": true,
-							"stagingSettings": {
-								"linkedServiceName": {
-									"referenceName": "ADLS linked service",
-									"type": "LinkedServiceReference"
-								},
-								"path": "source"
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_suppliers_csv",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_suppliers_dedsql",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-07-04T16:53:30Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_suppliers_csv')]",
-				"[concat(variables('factoryId'), '/datasets/ds_suppliers_dedsql')]",
-				"[concat(variables('factoryId'), '/linkedServices/ADLS linked service')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/pl_test_mapping')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -3917,13 +4020,6 @@
 								"type": "DatasetReference",
 								"parameters": {}
 							}
-						],
-						"outputs": [
-							{
-								"referenceName": "AzureSynapseAnalyticsTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
 						]
 					}
 				],
@@ -3938,7 +4034,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Ds_salesltaddress_sql')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSynapseAnalyticsTable1')]",
 				"[concat(variables('factoryId'), '/linkedServices/ADLSFORCSV')]"
 			]
 		},
@@ -3997,24 +4092,24 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable1')]",
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable8')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureSynapseAnalytics1",
+					"referenceName": "AzureSynapseAnalytics2",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
 				"type": "AzureSqlDWTable",
 				"schema": [],
 				"typeProperties": {
-					"schema": "SalesLT",
-					"table": "Address"
+					"schema": "dbo",
+					"table": "SalesGold"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics2')]"
 			]
 		},
 		{
@@ -5446,27 +5541,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_suppliers_dedsql')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_mydedsqlpool",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlDWTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Suppliers"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_mydedsqlpool')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ds_sweet_treats_auto_create_table')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5758,6 +5832,19 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSynapseAnalytics2_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Dynamic linked service')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -5918,28 +6005,6 @@
 					"accountKey": {
 						"type": "SecureString",
 						"value": "[parameters('ls_for_staging_accountKey')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ls_mydedsqlpool')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDW",
-				"typeProperties": {
-					"server": "[parameters('ls_mydedsqlpool_properties_typeProperties_server')]",
-					"database": "[parameters('ls_mydedsqlpool_properties_typeProperties_database')]",
-					"encrypt": "mandatory",
-					"trustServerCertificate": false,
-					"authenticationType": "SQL",
-					"userName": "[parameters('ls_mydedsqlpool_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('ls_mydedsqlpool_password')]"
 					}
 				}
 			},
@@ -6116,6 +6181,71 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_dessert4all_parquet')]",
 				"[concat(variables('factoryId'), '/datasets/ds_desserts4all_clean_silver')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Dataflow Cleaned Silver to Gold')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_desserts4all_clean_silver",
+								"type": "DatasetReference"
+							},
+							"name": "CleanedDessert4all"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSynapseAnalyticsTable8",
+								"type": "DatasetReference"
+							},
+							"name": "sqlpool"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AggregateTotalRevenue"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          SalesMonth as string,",
+						"          Retailer as string,",
+						"          Product as string,",
+						"          SalesValueUSD as float,",
+						"          UnitsSold as integer,",
+						"          Revenue as long",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> CleanedDessert4all",
+						"CleanedDessert4all aggregate(groupBy(Product),",
+						"     Revenue = sum(Revenue)) ~> AggregateTotalRevenue",
+						"AggregateTotalRevenue sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sqlpool"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_desserts4all_clean_silver')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSynapseAnalyticsTable8')]"
 			]
 		},
 		{

@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics1'"
 		},
+		"AzureSynapseAnalytics2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSynapseAnalytics2'"
+		},
 		"Dynamic linked service_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Dynamic linked service'"
@@ -58,10 +62,6 @@
 		"ls_for_staging_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_for_staging'"
-		},
-		"ls_mydedsqlpool_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'ls_mydedsqlpool'"
 		},
 		"ls_newstorageaccount_accountKey": {
 			"type": "secureString",
@@ -101,15 +101,15 @@
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_server": {
 			"type": "string",
-			"defaultValue": "sqlserverdebootcamp01.database.windows.net"
+			"defaultValue": "desynapsespace.sql.azuresynapse.net"
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_database": {
 			"type": "string",
-			"defaultValue": "dedsqlpool"
+			"defaultValue": "pool"
 		},
 		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
 			"type": "string",
-			"defaultValue": "sqldeuser"
+			"defaultValue": "sqladminuser"
 		},
 		"Dynamic linked service_properties_typeProperties_server": {
 			"type": "string",
@@ -166,18 +166,6 @@
 		"ls_for_staging_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adlsforstaging.dfs.core.windows.net/"
-		},
-		"ls_mydedsqlpool_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "desynapsespace.sql.azuresynapse.net"
-		},
-		"ls_mydedsqlpool_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "mydedsqlpool"
-		},
-		"ls_mydedsqlpool_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "sqladminuser"
 		},
 		"ls_newstorageaccount_properties_typeProperties_url": {
 			"type": "string",
@@ -287,6 +275,19 @@
 						"type": "SecureString",
 						"value": "[parameters('AzureSynapseAnalytics1_password')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSynapseAnalytics2_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -458,28 +459,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ls_mydedsqlpool')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDW",
-				"typeProperties": {
-					"server": "[parameters('ls_mydedsqlpool_properties_typeProperties_server')]",
-					"database": "[parameters('ls_mydedsqlpool_properties_typeProperties_database')]",
-					"encrypt": "mandatory",
-					"trustServerCertificate": false,
-					"authenticationType": "SQL",
-					"userName": "[parameters('ls_mydedsqlpool_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('ls_mydedsqlpool_password')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ls_newstorageaccount')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -585,24 +564,24 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable1')]",
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable8')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureSynapseAnalytics1",
+					"referenceName": "AzureSynapseAnalytics2",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
 				"type": "AzureSqlDWTable",
 				"schema": [],
 				"typeProperties": {
-					"schema": "SalesLT",
-					"table": "Address"
+					"schema": "dbo",
+					"table": "SalesGold"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics2')]"
 			]
 		}
 	]
