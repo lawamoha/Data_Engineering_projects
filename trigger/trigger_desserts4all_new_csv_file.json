@@ -14,9 +14,9 @@
 		"type": "BlobEventsTrigger",
 		"typeProperties": {
 			"blobPathBeginsWith": "/landing/blobs/",
-			"blobPathEndsWith": "'.csv'",
+			"blobPathEndsWith": "desserts4all/*.csv",
 			"ignoreEmptyBlobs": true,
-			"scope": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/rg-dataengrbootcamp/providers/Microsoft.Storage/storageAccounts/saproject9",
+			"scope": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/rg-dataengrbootcamp/providers/Microsoft.Storage/storageAccounts/sacproject9",
 			"events": [
 				"Microsoft.Storage.BlobCreated"
 			]
