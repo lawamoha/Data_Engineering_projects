@@ -180,7 +180,7 @@
 						"folderPath": "sales",
 						"fileSystem": "silver"
 					},
-					"compressionCodec": "snappy"
+					"compressionCodec": "none"
 				},
 				"schema": []
 			},
