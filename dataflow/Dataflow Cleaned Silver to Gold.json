@@ -14,11 +14,7 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "AzureSynapseAnalyticsTable6",
-						"type": "DatasetReference"
-					},
-					"name": "Dedsqlpool"
+					"name": "dedsqlpool"
 				}
 			],
 			"transformations": [
@@ -43,16 +39,8 @@
 				"     Revenue = sum(Revenue)) ~> AggregateTotalRevenue",
 				"AggregateTotalRevenue sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
-				"     staged: true,",
-				"     allowCopyCommand: true,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> Dedsqlpool"
+				"     skipDuplicateMapOutputs: true) ~> dedsqlpool"
 			]
 		}
 	}

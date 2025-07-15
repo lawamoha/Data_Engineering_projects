@@ -15,6 +15,17 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Dataflow Cleaned Silver to Gold",
+						"type": "DataFlowReference"
+					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "ls_for_staging",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "staging"
+					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"

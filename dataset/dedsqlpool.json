@@ -1,13 +1,12 @@
 {
-	"name": "ds_suppliers_dedsql",
+	"name": "dedsqlpool",
 	"properties": {
 		"annotations": [],
 		"type": "AzureSqlDWTable",
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "Suppliers"
+			"table": "SalesGold"
 		}
-	},
-	"type": "Microsoft.DataFactory/factories/datasets"
+	}
 }

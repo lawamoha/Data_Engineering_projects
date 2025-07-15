@@ -1,10 +1,6 @@
 {
 	"name": "AzureSynapseAnalyticsTable6",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "AzureSynapseAnalytics3",
-			"type": "LinkedServiceReference"
-		},
 		"annotations": [],
 		"type": "AzureSqlDWTable",
 		"schema": [],
