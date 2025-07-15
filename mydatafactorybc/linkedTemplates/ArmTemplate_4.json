@@ -1981,7 +1981,7 @@
 				],
 				"type": "BlobEventsTrigger",
 				"typeProperties": {
-					"blobPathBeginsWith": "/landing/blobs/desserts4all",
+					"blobPathBeginsWith": "/landing/blobs/",
 					"blobPathEndsWith": "20.csv",
 					"ignoreEmptyBlobs": true,
 					"scope": "[parameters('trigger_desserts4all_new_csv_file_properties_typeProperties_scope')]",
