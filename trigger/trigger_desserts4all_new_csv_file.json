@@ -9,6 +9,12 @@
 					"referenceName": "pl_Ingest_Sales_To_Bronze",
 					"type": "PipelineReference"
 				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "pl_Ingest_Sales_To_Bronze_copy_ORIGINAL",
+					"type": "PipelineReference"
+				}
 			}
 		],
 		"type": "BlobEventsTrigger",
