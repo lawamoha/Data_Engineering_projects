@@ -21,7 +21,7 @@
 						"type": "DelimitedTextSource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
+							"recursive": false,
 							"wildcardFolderPath": "desserts4all",
 							"wildcardFileName": "*.csv",
 							"enablePartitionDiscovery": false
