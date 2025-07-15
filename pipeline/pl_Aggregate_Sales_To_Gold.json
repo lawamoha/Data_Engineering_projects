@@ -1,9 +1,11 @@
 {
 	"name": "pl_Aggregate_Sales_To_Gold",
 	"properties": {
+		"description": "Automated Pipeline that ingests raw data, cleans and enriches it using data flow mapping and loads it into curated gold layer tables in Synapse Analytics",
 		"activities": [
 			{
 				"name": "Copy Desserts4all Landing to Bronze",
+				"description": "copy Desserts4all CSV files to Bronze Container using a storage event trigger",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
