@@ -4,6 +4,144 @@
 	"parameters": {
 		"factoryName": {
 			"value": "mydatafactorybc"
+		},
+		"ADLS linked service_accountKey": {
+			"value": ""
+		},
+		"ADLSFORCSV_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_password": {
+			"value": ""
+		},
+		"AzureSynapseAnalytics1_password": {
+			"value": ""
+		},
+		"Dynamic linked service_password": {
+			"value": ""
+		},
+		"LS_COPY_HIVDATA_BLOB_SERVICE_connectionString": {
+			"value": ""
+		},
+		"LS_TO_COPY_HIV_DATA_INTO_ADLS_accountKey": {
+			"value": ""
+		},
+		"MongoDb1_connectionString": {
+			"value": ""
+		},
+		"SQLtoADLS_accountKey": {
+			"value": ""
+		},
+		"filessqldb_password": {
+			"value": ""
+		},
+		"ls_asqldb_dbebootcamp1_password": {
+			"value": ""
+		},
+		"ls_for_staging_accountKey": {
+			"value": ""
+		},
+		"ls_mydedsqlpool_password": {
+			"value": ""
+		},
+		"ls_newstorageaccount_accountKey": {
+			"value": ""
+		},
+		"ls_saproject9_accountKey": {
+			"value": ""
+		},
+		"ADLS linked service_properties_typeProperties_url": {
+			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"ADLSFORCSV_properties_typeProperties_url": {
+			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://satestdebc.dfs.core.windows.net/"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"value": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"value": "mydbtestadf001"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "sqldeuser"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_server": {
+			"value": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_database": {
+			"value": "dedsqlpool"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
+			"value": "sqldeuser"
+		},
+		"Dynamic linked service_properties_typeProperties_server": {
+			"value": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"Dynamic linked service_properties_typeProperties_database": {
+			"value": "@{linkedService().db_name}"
+		},
+		"Dynamic linked service_properties_typeProperties_userName": {
+			"value": "sqldeuser"
+		},
+		"LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url": {
+			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"MongoDb1_properties_typeProperties_database": {
+			"value": "olistdatanosql_withamwild"
+		},
+		"SQLtoADLS_properties_typeProperties_url": {
+			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"filessqldb_properties_typeProperties_server": {
+			"value": "i0cpl.h.filess.io"
+		},
+		"filessqldb_properties_typeProperties_database": {
+			"value": "olistproject_oldestwork"
+		},
+		"filessqldb_properties_typeProperties_username": {
+			"value": "olistproject_oldestwork"
+		},
+		"httpgithublinkedservice_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/lawamoha/"
+		},
+		"ls_asqldb_dbebootcamp1_properties_typeProperties_server": {
+			"value": "sqlserverdebootcamp01.database.windows.net"
+		},
+		"ls_asqldb_dbebootcamp1_properties_typeProperties_database": {
+			"value": "dbdebootcamp1"
+		},
+		"ls_asqldb_dbebootcamp1_properties_typeProperties_userName": {
+			"value": "sqldeuser"
+		},
+		"ls_for_staging_properties_typeProperties_url": {
+			"value": "https://adlsforstaging.dfs.core.windows.net/"
+		},
+		"ls_mydedsqlpool_properties_typeProperties_server": {
+			"value": "desynapsespace.sql.azuresynapse.net"
+		},
+		"ls_mydedsqlpool_properties_typeProperties_database": {
+			"value": "mydedsqlpool"
+		},
+		"ls_mydedsqlpool_properties_typeProperties_userName": {
+			"value": "sqladminuser"
+		},
+		"ls_newstorageaccount_properties_typeProperties_url": {
+			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"ls_saproject9_properties_typeProperties_url": {
+			"value": "https://saproject9.dfs.core.windows.net/"
+		},
+		"trigger_desserts4all_new_csv_file_properties_typeProperties_scope": {
+			"value": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/rg-dataengrbootcamp/providers/Microsoft.Storage/storageAccounts/saproject9"
+		},
+		"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
+			"value": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/Az900/providers/Microsoft.Storage/storageAccounts/mynewstorageacctdb"
 		}
 	}
 }
