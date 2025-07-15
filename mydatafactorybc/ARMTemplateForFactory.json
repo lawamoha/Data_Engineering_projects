@@ -963,7 +963,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataset": {
-								"referenceName": "ds_dessert4all",
+								"referenceName": "ds_delete_desserts",
 								"type": "DatasetReference",
 								"parameters": {}
 							},
@@ -977,7 +977,7 @@
 							"enableLogging": true,
 							"storeSettings": {
 								"type": "AzureBlobFSReadSettings",
-								"fileListPath": "landing/desserts4all",
+								"recursive": false,
 								"enablePartitionDiscovery": false
 							}
 						}
@@ -995,6 +995,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_dessert4all')]",
 				"[concat(variables('factoryId'), '/datasets/ds_dessert4all_parquet')]",
+				"[concat(variables('factoryId'), '/datasets/ds_delete_desserts')]",
 				"[concat(variables('factoryId'), '/linkedServices/ls_sacproject9')]"
 			]
 		},
@@ -4721,6 +4722,29 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ADLS linked service')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_delete_desserts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sacproject9",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "desserts4all",
+						"fileSystem": "landing"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sacproject9')]"
 			]
 		},
 		{
