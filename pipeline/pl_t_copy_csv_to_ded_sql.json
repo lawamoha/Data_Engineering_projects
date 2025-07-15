@@ -46,12 +46,6 @@
 						"referenceName": "ds_suppliers_csv",
 						"type": "DatasetReference"
 					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_suppliers_dedsql",
-						"type": "DatasetReference"
-					}
 				]
 			}
 		],

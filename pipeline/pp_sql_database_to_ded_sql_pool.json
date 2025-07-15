@@ -40,12 +40,6 @@
 						"referenceName": "Ds_salesltaddress_sql",
 						"type": "DatasetReference"
 					}
-				],
-				"outputs": [
-					{
-						"referenceName": "AzureSynapseAnalyticsTable1",
-						"type": "DatasetReference"
-					}
 				]
 			}
 		],
