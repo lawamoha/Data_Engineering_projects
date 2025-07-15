@@ -2185,7 +2185,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "pl_Aggregate_Sales_To_Gold",
+							"referenceName": "pl_Ingest_Sales_To_Bronze",
 							"type": "PipelineReference"
 						},
 						"parameters": {}

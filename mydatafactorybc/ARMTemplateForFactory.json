@@ -851,7 +851,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_Aggregate_Sales_To_Gold')]",
+			"name": "[concat(parameters('factoryName'), '/pl_Ingest_Sales_To_Bronze')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -6047,7 +6047,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "pl_Aggregate_Sales_To_Gold",
+							"referenceName": "pl_Ingest_Sales_To_Bronze",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -6064,7 +6064,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_Aggregate_Sales_To_Gold')]"
+				"[concat(variables('factoryId'), '/pipelines/pl_Ingest_Sales_To_Bronze')]"
 			]
 		}
 	]
