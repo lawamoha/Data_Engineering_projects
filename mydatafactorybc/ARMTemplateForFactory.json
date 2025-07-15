@@ -1105,6 +1105,8 @@
 						"name": "Copy Desserts4all Landing to Bronze",
 						"description": "copy Desserts4all CSV files to Bronze Container using a storage event trigger with logging enable in landing container",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1181,6 +1183,8 @@
 						"name": "Delete CSV files",
 						"description": "Delete CSV files in Landing Container that have been copied to the bronze container",
 						"type": "Delete",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Wait to delete raw input files",
@@ -1221,6 +1225,8 @@
 					{
 						"name": "Wait to delete raw input files",
 						"type": "Wait",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Copy Desserts4all Landing to Bronze",
@@ -6233,6 +6239,13 @@
 							"type": "PipelineReference"
 						},
 						"parameters": {}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "pl_Ingest_Sales_To_Bronze_copy_ORIGINAL",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
 					}
 				],
 				"type": "BlobEventsTrigger",
@@ -6247,7 +6260,8 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_Ingest_Sales_To_Bronze')]"
+				"[concat(variables('factoryId'), '/pipelines/pl_Ingest_Sales_To_Bronze')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_Ingest_Sales_To_Bronze_copy_ORIGINAL')]"
 			]
 		},
 		{

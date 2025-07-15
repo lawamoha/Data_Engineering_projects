@@ -441,11 +441,11 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"trigger_desserts4all_new_csv_file_properties_typeProperties_scope": {
-						"value": "[parameters('trigger_desserts4all_new_csv_file_properties_typeProperties_scope')]"
-					},
 					"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
 						"value": "[parameters('trigger_for_handy_candy_parquet_properties_typeProperties_scope')]"
+					},
+					"trigger_desserts4all_new_csv_file_properties_typeProperties_scope": {
+						"value": "[parameters('trigger_desserts4all_new_csv_file_properties_typeProperties_scope')]"
 					}
 				}
 			},
