@@ -22,6 +22,7 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
+							"wildcardFolderPath": "desserts4all",
 							"wildcardFileName": "*.csv",
 							"enablePartitionDiscovery": false
 						},
@@ -48,7 +49,7 @@
 						},
 						"logLocationSettings": {
 							"linkedServiceName": {
-								"referenceName": "ls_saproject9",
+								"referenceName": "ls_sacproject9",
 								"type": "LinkedServiceReference"
 							},
 							"path": "landing"
@@ -112,7 +113,7 @@
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
 						"recursive": true,
-						"wildcardFileName": "*",
+						"wildcardFileName": "*.csv",
 						"enablePartitionDiscovery": false
 					}
 				}
