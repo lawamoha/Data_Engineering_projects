@@ -2,7 +2,7 @@
 	"name": "trigger_desserts4all_new_csv_file",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
