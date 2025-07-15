@@ -947,9 +947,9 @@
 						"type": "Delete",
 						"dependsOn": [
 							{
-								"activity": "Copy Desserts4all Landing to Bronze",
+								"activity": "Wait to delete raw input files",
 								"dependencyConditions": [
-									"Completed"
+									"Succeeded"
 								]
 							}
 						],
@@ -977,9 +977,25 @@
 							"enableLogging": true,
 							"storeSettings": {
 								"type": "AzureBlobFSReadSettings",
-								"recursive": false,
+								"recursive": true,
 								"enablePartitionDiscovery": false
 							}
+						}
+					},
+					{
+						"name": "Wait to delete raw input files",
+						"type": "Wait",
+						"dependsOn": [
+							{
+								"activity": "Copy Desserts4all Landing to Bronze",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 240
 						}
 					}
 				],
