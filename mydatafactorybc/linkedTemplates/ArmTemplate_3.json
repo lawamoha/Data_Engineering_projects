@@ -981,13 +981,12 @@
 									"referenceName": "ls_sacproject9",
 									"type": "LinkedServiceReference"
 								},
-								"path": "landing/desserts4all"
+								"path": "landing"
 							},
 							"enableLogging": true,
 							"storeSettings": {
 								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"wildcardFileName": "*.csv",
+								"fileListPath": "landing/desserts4all",
 								"enablePartitionDiscovery": false
 							}
 						}

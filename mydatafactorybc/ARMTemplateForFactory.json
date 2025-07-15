@@ -972,13 +972,12 @@
 									"referenceName": "ls_sacproject9",
 									"type": "LinkedServiceReference"
 								},
-								"path": "landing/desserts4all"
+								"path": "landing"
 							},
 							"enableLogging": true,
 							"storeSettings": {
 								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"wildcardFileName": "*.csv",
+								"fileListPath": "landing/desserts4all",
 								"enablePartitionDiscovery": false
 							}
 						}
@@ -5887,7 +5886,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
