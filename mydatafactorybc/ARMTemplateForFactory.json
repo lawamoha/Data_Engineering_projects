@@ -969,7 +969,7 @@
 							},
 							"logStorageSettings": {
 								"linkedServiceName": {
-									"referenceName": "ls_saproject9",
+									"referenceName": "ls_sacproject9",
 									"type": "LinkedServiceReference"
 								},
 								"path": "landing"
@@ -996,8 +996,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_dessert4all')]",
 				"[concat(variables('factoryId'), '/datasets/ds_dessert4all_parquet')]",
-				"[concat(variables('factoryId'), '/linkedServices/ls_sacproject9')]",
-				"[concat(variables('factoryId'), '/linkedServices/ls_saproject9')]"
+				"[concat(variables('factoryId'), '/linkedServices/ls_sacproject9')]"
 			]
 		},
 		{
