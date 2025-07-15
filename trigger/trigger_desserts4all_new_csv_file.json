@@ -13,7 +13,7 @@
 		],
 		"type": "BlobEventsTrigger",
 		"typeProperties": {
-			"blobPathBeginsWith": "/landing/blobs/",
+			"blobPathBeginsWith": "/landing/blobs/'desserts4all/'",
 			"ignoreEmptyBlobs": true,
 			"scope": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/rg-dataengrbootcamp/providers/Microsoft.Storage/storageAccounts/saproject9",
 			"events": [
