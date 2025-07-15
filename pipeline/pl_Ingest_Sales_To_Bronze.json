@@ -99,7 +99,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_dessert4all",
+						"referenceName": "ds_delete_desserts",
 						"type": "DatasetReference"
 					},
 					"logStorageSettings": {
@@ -112,7 +112,7 @@
 					"enableLogging": true,
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
-						"fileListPath": "landing/desserts4all",
+						"recursive": false,
 						"enablePartitionDiscovery": false
 					}
 				}
