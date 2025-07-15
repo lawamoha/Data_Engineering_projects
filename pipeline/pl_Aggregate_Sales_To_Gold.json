@@ -61,6 +61,47 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Delete CSV files",
+				"description": "Delete CSV files in Landing Container that have been copied to the bronze container",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Copy Desserts4all Landing to Bronze",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_dessert4all",
+						"type": "DatasetReference"
+					},
+					"logStorageSettings": {
+						"linkedServiceName": {
+							"referenceName": "ls_saproject9",
+							"type": "LinkedServiceReference"
+						},
+						"path": "landing"
+					},
+					"enableLogging": true,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"wildcardFileName": "*",
+						"enablePartitionDiscovery": false
+					}
+				}
 			}
 		],
 		"folder": {
