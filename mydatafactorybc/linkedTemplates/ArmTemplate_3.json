@@ -928,7 +928,7 @@
 				"activities": [
 					{
 						"name": "Copy Desserts4all Landing to Bronze",
-						"description": "copy Desserts4all CSV files to Bronze Container using a storage event trigger",
+						"description": "copy Desserts4all CSV files to Bronze Container using a storage event trigger with logging enable in landing container",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -963,6 +963,20 @@
 								}
 							},
 							"enableStaging": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_saproject9",
+										"type": "LinkedServiceReference"
+									},
+									"path": "landing"
+								}
+							},
 							"translator": {
 								"type": "TabularTranslator",
 								"typeConversion": true,
