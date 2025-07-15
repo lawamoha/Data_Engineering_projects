@@ -981,7 +981,7 @@
 									"referenceName": "ls_sacproject9",
 									"type": "LinkedServiceReference"
 								},
-								"path": "landing"
+								"path": "landing/desserts4all"
 							},
 							"enableLogging": true,
 							"storeSettings": {
