@@ -1,19 +1,22 @@
 {
-	"name": "ds_dessert4all_parquet",
+	"name": "ds_dessert4all",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_saproject9",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "Parquet",
+		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "desserts4all.parquet",
-				"fileSystem": "bronze"
+				"folderPath": "desserts4all",
+				"fileSystem": "landing"
 			},
-			"compressionCodec": "none"
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
 		},
 		"schema": []
 	},

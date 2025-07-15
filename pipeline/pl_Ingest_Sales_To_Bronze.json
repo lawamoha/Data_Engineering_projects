@@ -39,8 +39,36 @@
 							"type": "ParquetWriteSettings"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ls_saproject9",
+								"type": "LinkedServiceReference"
+							},
+							"path": "landing"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
+				"inputs": [
+					{
+						"referenceName": "ds_dessert4all",
+						"type": "DatasetReference"
+					}
+				],
 				"outputs": [
 					{
 						"referenceName": "ds_dessert4all_parquet",
@@ -69,6 +97,17 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_dessert4all",
+						"type": "DatasetReference"
+					},
+					"logStorageSettings": {
+						"linkedServiceName": {
+							"referenceName": "ls_saproject9",
+							"type": "LinkedServiceReference"
+						},
+						"path": "landing"
+					},
 					"enableLogging": true,
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
@@ -83,7 +122,7 @@
 			"name": "Pipelines with Triggers"
 		},
 		"annotations": [],
-		"lastPublishTime": "2025-07-15T12:08:49Z"
+		"lastPublishTime": "2025-07-15T14:37:35Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
