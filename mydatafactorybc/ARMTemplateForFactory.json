@@ -949,7 +949,7 @@
 							{
 								"activity": "Copy Desserts4all Landing to Bronze",
 								"dependencyConditions": [
-									"Succeeded"
+									"Completed"
 								]
 							}
 						],
