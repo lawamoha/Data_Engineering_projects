@@ -55,10 +55,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_asqldb_dbebootcamp1'"
 		},
-		"ls_cosmosdb_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'ls_cosmosdb'"
-		},
 		"ls_for_staging_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_for_staging'"
@@ -70,6 +66,10 @@
 		"ls_newstorageaccount_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_newstorageaccount'"
+		},
+		"ls_saproject9_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_saproject9'"
 		},
 		"ADLS linked service_properties_typeProperties_url": {
 			"type": "string",
@@ -179,6 +179,10 @@
 			"type": "string",
 			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
 		},
+		"ls_saproject9_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://saproject9.dfs.core.windows.net/"
+		},
 		"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/Az900/providers/Microsoft.Storage/storageAccounts/mynewstorageacctdb"
@@ -246,9 +250,6 @@
 					"ls_asqldb_dbebootcamp1_password": {
 						"value": "[parameters('ls_asqldb_dbebootcamp1_password')]"
 					},
-					"ls_cosmosdb_connectionString": {
-						"value": "[parameters('ls_cosmosdb_connectionString')]"
-					},
 					"ls_for_staging_accountKey": {
 						"value": "[parameters('ls_for_staging_accountKey')]"
 					},
@@ -257,6 +258,9 @@
 					},
 					"ls_newstorageaccount_accountKey": {
 						"value": "[parameters('ls_newstorageaccount_accountKey')]"
+					},
+					"ls_saproject9_accountKey": {
+						"value": "[parameters('ls_saproject9_accountKey')]"
 					},
 					"ADLS linked service_properties_typeProperties_url": {
 						"value": "[parameters('ADLS linked service_properties_typeProperties_url')]"
@@ -338,6 +342,9 @@
 					},
 					"ls_newstorageaccount_properties_typeProperties_url": {
 						"value": "[parameters('ls_newstorageaccount_properties_typeProperties_url')]"
+					},
+					"ls_saproject9_properties_typeProperties_url": {
+						"value": "[parameters('ls_saproject9_properties_typeProperties_url')]"
 					}
 				}
 			},

@@ -55,10 +55,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_asqldb_dbebootcamp1'"
 		},
-		"ls_cosmosdb_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'ls_cosmosdb'"
-		},
 		"ls_for_staging_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_for_staging'"
@@ -70,6 +66,10 @@
 		"ls_newstorageaccount_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_newstorageaccount'"
+		},
+		"ls_saproject9_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_saproject9'"
 		},
 		"ADLS linked service_properties_typeProperties_url": {
 			"type": "string",
@@ -179,6 +179,10 @@
 			"type": "string",
 			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
 		},
+		"ls_saproject9_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://saproject9.dfs.core.windows.net/"
+		},
 		"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/Az900/providers/Microsoft.Storage/storageAccounts/mynewstorageacctdb"
@@ -249,7 +253,7 @@
 					"name": "pipeline_tutorial"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-06-18T01:47:05Z"
+				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/MongoDbV2Collection1')]",
@@ -501,7 +505,7 @@
 					"name": "pipeline_tutorial"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-06-18T01:47:05Z"
+				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/GitHubdataCSV')]",
@@ -551,7 +555,8 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-07-12T19:21:43Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/dataflow_for_jollygood')]"
@@ -634,11 +639,294 @@
 					"name": "DE_bootcamp"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-06-15T20:17:14Z"
+				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_blob_tsv')]",
 				"[concat(variables('factoryId'), '/datasets/dscopyintoADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl copy tables to adls usind dynamic parameters')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy tables using dynamic parameters",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_dynamic_tables",
+								"type": "DatasetReference",
+								"parameters": {
+									"Table_Name": {
+										"value": "@pipeline().parameters.Table_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.Schema_Name",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_saleslt_dynamic_copy",
+								"type": "DatasetReference",
+								"parameters": {
+									"File_Name": {
+										"value": "@concat(pipeline().parameters.File_Name,'-',utcNow(),'.csv')",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"Table_Name": {
+						"type": "string"
+					},
+					"File_Name": {
+						"type": "string"
+					},
+					"Schema_Name": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "pipeline_tutorial"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-07-14T22:09:10Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_dynamic_tables')]",
+				"[concat(variables('factoryId'), '/datasets/ds_saleslt_dynamic_copy')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl copy tables to adls using dynamic parameters')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy tables using dynamic parameters",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_dynamic_tables",
+								"type": "DatasetReference",
+								"parameters": {
+									"Table_Name": {
+										"value": "@pipeline().parameters.Table_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.Schema_Name",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_saleslt_dynamic_copy",
+								"type": "DatasetReference",
+								"parameters": {
+									"File_Name": {
+										"value": "@concat(pipeline().parameters.File_Name,'-',utcNow(),'.csv')",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"Table_Name": {
+						"type": "string"
+					},
+					"File_Name": {
+						"type": "string"
+					},
+					"Schema_Name": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "pipeline_tutorial"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-07-15T12:08:48Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_dynamic_tables')]",
+				"[concat(variables('factoryId'), '/datasets/ds_saleslt_dynamic_copy')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_Aggregate_Sales_To_Gold')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Automated Pipeline that ingests raw data, cleans and enriches it using data flow mapping and loads it into curated gold layer tables in Synapse Analytics",
+				"activities": [
+					{
+						"name": "Copy Desserts4all Landing to Bronze",
+						"description": "copy Desserts4all CSV files to Bronze Container using a storage event trigger",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "MergeFiles"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_dessert4all",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_dessert4all_parquet",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Pipelines with Triggers"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-07-15T12:08:49Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_dessert4all')]",
+				"[concat(variables('factoryId'), '/datasets/ds_dessert4all_parquet')]"
 			]
 		},
 		{
@@ -717,7 +1005,8 @@
 				"folder": {
 					"name": "DE_bootcamp"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_adf_datasets')]",
@@ -960,7 +1249,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-06-20T21:01:13Z"
+				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_adls_pop_by_age')]",
@@ -1392,7 +1681,7 @@
 					"name": "DE_bootcamp"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-06-17T02:10:48Z"
+				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Ds_salesltproducts_SQL')]",
@@ -1507,7 +1796,8 @@
 				"folder": {
 					"name": "pipeline_tutorial"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-07-05T02:46:50Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_sweet_treats_csv')]",
@@ -1691,7 +1981,8 @@
 				"folder": {
 					"name": "DE_bootcamp"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-07-07T14:44:54Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_saleslt_mydbtestadf001')]",
@@ -1770,7 +2061,8 @@
 				"folder": {
 					"name": "Pipelines with Triggers"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-07-13T19:36:47Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/parquetfile')]",
@@ -1900,7 +2192,8 @@
 				"folder": {
 					"name": "DE_bootcamp"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-06-29T22:39:29Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_Json_sugarcube')]",
@@ -1993,7 +2286,8 @@
 				"folder": {
 					"name": "pipeline_tutorial"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-07-05T02:23:42Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_sweet_treats_csv')]",
@@ -2127,7 +2421,8 @@
 				"folder": {
 					"name": "DE_bootcamp"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-06-28T18:21:07Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_csv_sales')]",
@@ -2200,7 +2495,8 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-07-04T16:53:30Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_suppliers_csv')]",
@@ -2343,7 +2639,8 @@
 				"folder": {
 					"name": "DE_bootcamp"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-06-29T21:39:21Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_candyshack')]",
@@ -2467,7 +2764,8 @@
 				"folder": {
 					"name": "DE_bootcamp"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-06-29T23:06:08Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_json_handycandy')]",
@@ -2615,7 +2913,8 @@
 						]
 					}
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-07-12T19:01:01Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_sqltables_with_manually_gener_parameters')]",
@@ -2753,7 +3052,8 @@
 				"folder": {
 					"name": "DE_bootcamp"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2025-07-06T18:07:49Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_candyshack')]",
@@ -3022,7 +3322,7 @@
 					"name": "Iceberg"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-06-17T03:01:06Z"
+				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/datasetforsalesltproductscsv')]",
@@ -3196,7 +3496,7 @@
 					"name": "Iceberg"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-06-17T03:01:06Z"
+				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Ds_salesltaddress_sql')]",
@@ -3428,7 +3728,7 @@
 					"name": "DE_bootcamp"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-06-18T01:47:05Z"
+				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_blob_tsv')]",
@@ -3498,7 +3798,7 @@
 					"name": "DE_bootcamp"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-06-16T20:19:52Z"
+				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Ds_salesltaddress_sql')]",
@@ -4355,6 +4655,96 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_dessert4all')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_saproject9",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "landing"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_saproject9')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_dessert4all_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_saproject9",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "desserts4all.parquet",
+						"fileSystem": "bronze"
+					},
+					"compressionCodec": "none"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_saproject9')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_dynamic_tables')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dynamic linked service",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"db_name": "dbdebootcamp "
+					}
+				},
+				"parameters": {
+					"Table_Name": {
+						"type": "string"
+					},
+					"Schema_Name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().Schema_Name",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().Table_Name",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dynamic linked service')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_jollygood_xlsx')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -4552,6 +4942,42 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_asqldb_dbebootcamp1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_saleslt_dynamic_copy')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_COPY_HIVDATA_BLOB_SERVICE",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"File_Name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().File_Name",
+							"type": "Expression"
+						},
+						"container": "saleslt"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_COPY_HIVDATA_BLOB_SERVICE')]"
 			]
 		},
 		{
@@ -5295,19 +5721,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ls_cosmosdb')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "CosmosDb",
-				"typeProperties": {
-					"connectionString": "[parameters('ls_cosmosdb_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ls_for_staging')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -5364,12 +5777,29 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ls_saproject9')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_saproject9_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ls_saproject9_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/trigger_for_handy_candy_parquet')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
@@ -5392,6 +5822,46 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pl_copyfile_using_storage_events_trigger')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false,
+							"customProperties": []
+						}
+					}
+				}
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/dataflow_for_jollygood')]",
