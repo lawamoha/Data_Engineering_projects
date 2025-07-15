@@ -145,6 +145,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"folderPath": "desserts4all",
 						"fileSystem": "landing"
 					},
 					"columnDelimiter": ",",
