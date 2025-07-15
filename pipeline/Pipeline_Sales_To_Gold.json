@@ -65,6 +65,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "Pipelines with Triggers"
+		},
 		"annotations": []
 	}
 }
