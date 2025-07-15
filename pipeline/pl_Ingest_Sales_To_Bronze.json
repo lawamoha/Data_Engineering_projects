@@ -40,20 +40,6 @@
 						}
 					},
 					"enableStaging": false,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "ls_saproject9",
-								"type": "LinkedServiceReference"
-							},
-							"path": "landing"
-						}
-					},
 					"translator": {
 						"type": "TabularTranslator",
 						"typeConversion": true,
@@ -100,13 +86,6 @@
 					"dataset": {
 						"referenceName": "ds_dessert4all",
 						"type": "DatasetReference"
-					},
-					"logStorageSettings": {
-						"linkedServiceName": {
-							"referenceName": "ls_saproject9",
-							"type": "LinkedServiceReference"
-						},
-						"path": "landing"
 					},
 					"enableLogging": true,
 					"storeSettings": {

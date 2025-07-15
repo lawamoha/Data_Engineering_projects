@@ -1,10 +1,6 @@
 {
 	"name": "ds_dessert4all_parquet",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "ls_saproject9",
-			"type": "LinkedServiceReference"
-		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {
