@@ -67,6 +67,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_newstorageaccount'"
 		},
+		"ls_sacproject9_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_sacproject9'"
+		},
 		"ls_saproject9_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_saproject9'"
@@ -178,6 +182,10 @@
 		"ls_newstorageaccount_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"ls_sacproject9_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sacproject9.dfs.core.windows.net/"
 		},
 		"ls_saproject9_properties_typeProperties_url": {
 			"type": "string",
@@ -876,6 +884,7 @@
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
+									"wildcardFolderPath": "desserts4all",
 									"wildcardFileName": "*.csv",
 									"enablePartitionDiscovery": false
 								},
@@ -902,7 +911,7 @@
 								},
 								"logLocationSettings": {
 									"linkedServiceName": {
-										"referenceName": "ls_saproject9",
+										"referenceName": "ls_sacproject9",
 										"type": "LinkedServiceReference"
 									},
 									"path": "landing"
@@ -969,7 +978,7 @@
 							"storeSettings": {
 								"type": "AzureBlobFSReadSettings",
 								"recursive": true,
-								"wildcardFileName": "*",
+								"wildcardFileName": "*.csv",
 								"enablePartitionDiscovery": false
 							}
 						}
@@ -987,6 +996,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_dessert4all')]",
 				"[concat(variables('factoryId'), '/datasets/ds_dessert4all_parquet')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_sacproject9')]",
 				"[concat(variables('factoryId'), '/linkedServices/ls_saproject9')]"
 			]
 		},
@@ -4721,7 +4731,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "ls_saproject9",
+					"referenceName": "ls_sacproject9",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
@@ -4740,7 +4750,7 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_saproject9')]"
+				"[concat(variables('factoryId'), '/linkedServices/ls_sacproject9')]"
 			]
 		},
 		{
@@ -4749,7 +4759,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "ls_saproject9",
+					"referenceName": "ls_sacproject9",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
@@ -4765,7 +4775,7 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_saproject9')]"
+				"[concat(variables('factoryId'), '/linkedServices/ls_sacproject9')]"
 			]
 		},
 		{
@@ -5833,6 +5843,23 @@
 					"accountKey": {
 						"type": "SecureString",
 						"value": "[parameters('ls_newstorageaccount_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_sacproject9')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_sacproject9_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ls_sacproject9_accountKey')]"
 					}
 				}
 			},

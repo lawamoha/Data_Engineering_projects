@@ -67,6 +67,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_newstorageaccount'"
 		},
+		"ls_sacproject9_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_sacproject9'"
+		},
 		"ls_saproject9_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_saproject9'"
@@ -179,6 +183,10 @@
 			"type": "string",
 			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
 		},
+		"ls_sacproject9_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sacproject9.dfs.core.windows.net/"
+		},
 		"ls_saproject9_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://saproject9.dfs.core.windows.net/"
@@ -263,6 +271,9 @@
 					"ls_newstorageaccount_accountKey": {
 						"value": "[parameters('ls_newstorageaccount_accountKey')]"
 					},
+					"ls_sacproject9_accountKey": {
+						"value": "[parameters('ls_sacproject9_accountKey')]"
+					},
 					"ls_saproject9_accountKey": {
 						"value": "[parameters('ls_saproject9_accountKey')]"
 					},
@@ -346,6 +357,9 @@
 					},
 					"ls_newstorageaccount_properties_typeProperties_url": {
 						"value": "[parameters('ls_newstorageaccount_properties_typeProperties_url')]"
+					},
+					"ls_sacproject9_properties_typeProperties_url": {
+						"value": "[parameters('ls_sacproject9_properties_typeProperties_url')]"
 					},
 					"ls_saproject9_properties_typeProperties_url": {
 						"value": "[parameters('ls_saproject9_properties_typeProperties_url')]"

@@ -50,6 +50,9 @@
 		"ls_newstorageaccount_accountKey": {
 			"value": ""
 		},
+		"ls_sacproject9_accountKey": {
+			"value": ""
+		},
 		"ls_saproject9_accountKey": {
 			"value": ""
 		},
@@ -133,6 +136,9 @@
 		},
 		"ls_newstorageaccount_properties_typeProperties_url": {
 			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
+		},
+		"ls_sacproject9_properties_typeProperties_url": {
+			"value": "https://sacproject9.dfs.core.windows.net/"
 		},
 		"ls_saproject9_properties_typeProperties_url": {
 			"value": "https://saproject9.dfs.core.windows.net/"
