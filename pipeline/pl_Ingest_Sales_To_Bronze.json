@@ -1,5 +1,5 @@
 {
-	"name": "pl_Aggregate_Sales_To_Gold",
+	"name": "pl_Ingest_Sales_To_Bronze",
 	"properties": {
 		"description": "Automated Pipeline that ingests raw data, cleans and enriches it using data flow mapping and loads it into curated gold layer tables in Synapse Analytics",
 		"activities": [
