@@ -1007,6 +1007,8 @@
 						"name": "Delete CSV files",
 						"description": "Delete CSV files in Landing Container that have been copied to the bronze container",
 						"type": "Delete",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Copy Desserts4all Landing to Bronze",
