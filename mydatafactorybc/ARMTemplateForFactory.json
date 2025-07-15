@@ -702,6 +702,9 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"folder": {
+					"name": "Pipelines with Triggers"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
