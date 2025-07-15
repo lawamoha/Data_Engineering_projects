@@ -234,7 +234,7 @@
 			"name": "pipeline_tutorial"
 		},
 		"annotations": [],
-		"lastPublishTime": "2025-06-18T01:47:05Z"
+		"lastPublishTime": "2025-06-28T17:22:53Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

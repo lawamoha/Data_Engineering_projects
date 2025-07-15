@@ -116,6 +116,8 @@
 		"folder": {
 			"name": "DE_bootcamp"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2025-06-28T18:21:07Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }

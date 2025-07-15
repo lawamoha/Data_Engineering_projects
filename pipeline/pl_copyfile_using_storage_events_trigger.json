@@ -61,6 +61,8 @@
 		"folder": {
 			"name": "Pipelines with Triggers"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2025-07-13T19:36:47Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }

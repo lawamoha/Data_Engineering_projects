@@ -94,6 +94,8 @@
 		"folder": {
 			"name": "pipeline_tutorial"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2025-07-05T02:46:50Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }

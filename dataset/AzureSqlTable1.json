@@ -45,5 +45,6 @@
 			"schema": "dbo",
 			"table": "handycandy"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }

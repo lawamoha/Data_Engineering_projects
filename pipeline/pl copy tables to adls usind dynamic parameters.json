@@ -1,5 +1,5 @@
 {
-	"name": "pl copy tables to adls using dynamic parameters",
+	"name": "pl copy tables to adls usind dynamic parameters",
 	"properties": {
 		"activities": [
 			{
@@ -86,7 +86,7 @@
 			"name": "pipeline_tutorial"
 		},
 		"annotations": [],
-		"lastPublishTime": "2025-07-15T12:08:48Z"
+		"lastPublishTime": "2025-07-14T22:09:10Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
