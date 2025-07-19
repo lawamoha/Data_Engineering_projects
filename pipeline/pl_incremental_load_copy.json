@@ -1,0 +1,46 @@
+{
+	"name": "pl_incremental_load_copy",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata Desserts4all",
+				"description": "Lookup datasets\nstatic (no parameters)",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
+			},
+			{
+				"name": "ForEach file from Desserts4all",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"activities": [
+						{
+							"name": "Get Metadata of Get Metadata Activity",
+							"description": "dynamic Get Metadata using\nLast Modified Data\n",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": []
+						}
+					]
+				}
+			}
+		],
+		"annotations": []
+	}
+}
