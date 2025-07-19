@@ -1,5 +1,5 @@
 {
-	"name": "pl_incremental_load_copy",
+	"name": "pl_incremental_load_copy_files",
 	"properties": {
 		"activities": [
 			{
