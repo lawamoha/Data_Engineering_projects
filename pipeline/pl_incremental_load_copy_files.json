@@ -16,15 +16,39 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"fieldList": []
+					"dataset": {
+						"referenceName": "ds_desserts4all_csv_incremental",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
 				}
 			},
 			{
 				"name": "ForEach file from Desserts4all",
 				"type": "ForEach",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Get Metadata Desserts4all",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata Desserts4all').output.childItems",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "Get Metadata of Get Metadata Activity",
@@ -40,7 +64,26 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"fieldList": []
+								"dataset": {
+									"referenceName": "ds_dessertsforall_dynamic_getmetadata",
+									"type": "DatasetReference",
+									"parameters": {
+										"FileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"lastModified"
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
 							}
 						},
 						{
@@ -54,8 +97,11 @@
 									]
 								}
 							],
-							"userProperties": [],
 							"typeProperties": {
+								"expression": {
+									"value": "@activity('Get Metadata of Get Metadata Activity').output.lastModified",
+									"type": "Expression"
+								},
 								"ifTrueActivities": [
 									{
 										"name": "Copy data recentfile",
