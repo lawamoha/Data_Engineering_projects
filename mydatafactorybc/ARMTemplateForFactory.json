@@ -2988,7 +2988,7 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"FileName": {
-										"value": "@variables('CurrentFile')",
+										"value": "@activity('Get Metadata of Get Metadata Activity').output.itemName",
 										"type": "Expression"
 									}
 								}
@@ -5434,6 +5434,34 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_desserts4all_sink_silver')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_COPY_HIVDATA_BLOB_SERVICE",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "silver",
+						"container": "source"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_COPY_HIVDATA_BLOB_SERVICE')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_dessertsforall_dynamic_getmetadata')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -6864,34 +6892,6 @@
 				"[concat(variables('factoryId'), '/datasets/ds_jollygood_xlsx')]",
 				"[concat(variables('factoryId'), '/linkedServices/ADLS linked service')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sql_sales_xlsx_sales_table')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_desserts4all_sink_silver')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_COPY_HIVDATA_BLOB_SERVICE",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "silver",
-						"container": "source"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_COPY_HIVDATA_BLOB_SERVICE')]"
 			]
 		}
 	]
