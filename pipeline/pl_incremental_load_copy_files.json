@@ -25,6 +25,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -75,10 +76,12 @@
 									}
 								},
 								"fieldList": [
-									"lastModified"
+									"lastModified",
+									"itemName"
 								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -97,27 +100,52 @@
 									]
 								}
 							],
+							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@activity('Get Metadata of Get Metadata Activity').output.lastModified",
+									"value": "@greater(activity('Get Metadata of Get Metadata Activity').output.lastModified,variables('PreviousFile'))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Copy data recentfile",
-										"description": "using recent file from Last Modified",
-										"type": "Copy",
+										"name": "Set variable1",
+										"type": "SetVariable",
 										"dependsOn": [],
 										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
 											"secureOutput": false,
 											"secureInput": false
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"enableStaging": false
+											"variableName": "CurrentFile",
+											"value": {
+												"value": "@activity('Get Metadata of Get Metadata Activity').output.itemName",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "Set variable2",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "Set variable1",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "PreviousFile",
+											"value": {
+												"value": "@activity('Get Metadata of Get Metadata Activity').output.lastModified",
+												"type": "Expression"
+											}
 										}
 									}
 								]
@@ -127,6 +155,14 @@
 				}
 			}
 		],
+		"variables": {
+			"CurrentFile": {
+				"type": "String"
+			},
+			"PreviousFile": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "Incremental Copy CSV Files"
 		},
