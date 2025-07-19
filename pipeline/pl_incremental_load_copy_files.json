@@ -44,7 +44,7 @@
 							}
 						},
 						{
-							"name": "If Condition1",
+							"name": "If Condition for Last Modified",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
