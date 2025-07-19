@@ -81,6 +81,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "Incremental Copy CSV Files"
+		},
 		"annotations": []
 	}
 }
