@@ -14,7 +14,10 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"fieldList": []
+				}
 			},
 			{
 				"name": "ForEach file from Desserts4all",
@@ -35,6 +38,22 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
+							"userProperties": [],
+							"typeProperties": {
+								"fieldList": []
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata of Get Metadata Activity",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": []
 						}
 					]
