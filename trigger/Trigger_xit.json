@@ -2,7 +2,7 @@
 	"name": "Trigger_xit",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "CopyPipeline_xit",
