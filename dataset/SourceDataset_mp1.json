@@ -1,0 +1,18 @@
+{
+	"name": "SourceDataset_mp1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS linked service",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData/Desserts4All",
+				"fileSystem": "source"
+			}
+		}
+	}
+}
