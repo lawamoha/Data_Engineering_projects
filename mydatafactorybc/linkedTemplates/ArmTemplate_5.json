@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "mydatafactorybc"
 		},
+		"Trigger_mp1_properties_pipeline_parameters_windowStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
 		"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/Az900/providers/Microsoft.Storage/storageAccounts/mynewstorageacctdb"
@@ -20,6 +24,249 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Bronze to Silver')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_dessert4all_parquet",
+								"type": "DatasetReference"
+							},
+							"name": "Desserts4allParquet"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_desserts4all_clean_silver",
+								"type": "DatasetReference"
+							},
+							"name": "Destination"
+						}
+					],
+					"transformations": [
+						{
+							"name": "DerivedColumn"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          SalesMonth as string,",
+						"          Retailer as string,",
+						"          Product as string,",
+						"          SalesValueUSD as float,",
+						"          UnitsSold as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> Desserts4allParquet",
+						"Desserts4allParquet derive(Revenue = SalesValueUSD*UnitsSold) ~> DerivedColumn",
+						"DerivedColumn sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     partitionFileNames:['cleaned_desserts4all.parquet'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> Destination"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Dataflow Cleaned Silver to Gold')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_desserts4all_clean_silver",
+								"type": "DatasetReference"
+							},
+							"name": "CleanedDessert4all"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSynapseAnalyticsTable8",
+								"type": "DatasetReference"
+							},
+							"name": "sqlpool"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AggregateTotalRevenue"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          SalesMonth as string,",
+						"          Retailer as string,",
+						"          Product as string,",
+						"          SalesValueUSD as float,",
+						"          UnitsSold as integer,",
+						"          Revenue as long",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> CleanedDessert4all",
+						"CleanedDessert4all aggregate(groupBy(Product),",
+						"     Revenue = sum(Revenue)) ~> AggregateTotalRevenue",
+						"AggregateTotalRevenue sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sqlpool"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow_for_jollygood')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_jollygood_xlsx",
+								"type": "DatasetReference"
+							},
+							"name": "SourceJollyGoodxsl",
+							"description": "Transforming Jolly Good excel file using a lookup reference file."
+						},
+						{
+							"linkedService": {
+								"referenceName": "ADLS linked service",
+								"type": "LinkedServiceReference"
+							},
+							"name": "ExchangeRateJollyGood"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_sql_sales_xlsx_sales_table",
+								"type": "DatasetReference"
+							},
+							"name": "SinkToSalesLoadTable"
+						}
+					],
+					"transformations": [
+						{
+							"name": "FilterOutMonthTotal"
+						},
+						{
+							"name": "FilterCurrencytoUSD"
+						},
+						{
+							"name": "lookupExchangeRates"
+						},
+						{
+							"name": "derivedColumnTotalSales"
+						},
+						{
+							"name": "SelectRequiredColumns"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Period as date,",
+						"          Product as string,",
+						"          {Unit Price} as double,",
+						"          Currency as string,",
+						"          {Units Sold} as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> SourceJollyGoodxsl",
+						"source(output(",
+						"          FromCurrency as string,",
+						"          ToCurrency as string,",
+						"          Date as date,",
+						"          ExchangeRate as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'excel',",
+						"     fileSystem: 'source',",
+						"     folderPath: 'landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData',",
+						"     fileName: 'ExchangeRates.xlsx',",
+						"     sheetName: 'Sheet1',",
+						"     firstRowAsHeader: true) ~> ExchangeRateJollyGood",
+						"SourceJollyGoodxsl filter(Product!='Month Total') ~> FilterOutMonthTotal",
+						"ExchangeRateJollyGood filter(ToCurrency=='USD') ~> FilterCurrencytoUSD",
+						"FilterOutMonthTotal, FilterCurrencytoUSD lookup(Period == Date",
+						"     && Currency == FromCurrency,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupExchangeRates",
+						"lookupExchangeRates derive(SalesValueUSD = {Unit Price}*ExchangeRate*{Units Sold}) ~> derivedColumnTotalSales",
+						"derivedColumnTotalSales select(mapColumn(",
+						"          Product,",
+						"          {Unit Price},",
+						"          {Units Sold},",
+						"          Date,",
+						"          SalesValueUSD",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> SelectRequiredColumns",
+						"SelectRequiredColumns sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          RowId as integer,",
+						"          Retailer as string,",
+						"          SalesMonth as date,",
+						"          Product as string,",
+						"          ManufacturerProductCode as string,",
+						"          SalesValueUSD as decimal(18,2),",
+						"          UnitsSold as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          SalesMonth = Date,",
+						"          Product,",
+						"          SalesValueUSD,",
+						"          UnitsSold = {Units Sold}",
+						"     )) ~> SinkToSalesLoadTable"
+					]
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Aggregate_sales_to_Gold')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -71,7 +318,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Dataflow Cleaned Silver to Gold')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Pl_Aggregate_Sales_To_Gold')]",
@@ -124,7 +373,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Dataflow Cleaned Silver to Gold')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Pl_Transform_Sales_To_Silver')]",
@@ -172,7 +423,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Bronze to Silver')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/dataflow_sales_excelfile_to_sales_load_table')]",
@@ -217,6 +470,42 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-07-12T19:21:43Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow_for_jollygood')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Trigger_mp1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "CopyPipelineDessert4all",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"windowStart": {
+							"type": "Expression",
+							"value": "[parameters('Trigger_mp1_properties_pipeline_parameters_windowStart')]"
+						}
+					}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2025-07-15T16:23:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
 			},
 			"dependsOn": []
 		},

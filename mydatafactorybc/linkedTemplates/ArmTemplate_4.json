@@ -13,6 +13,342 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/pl copy tables to adls using dynamic parameters')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy tables using dynamic parameters",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_dynamic_tables",
+								"type": "DatasetReference",
+								"parameters": {
+									"Table_Name": {
+										"value": "@pipeline().parameters.Table_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.Schema_Name",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_saleslt_dynamic_copy",
+								"type": "DatasetReference",
+								"parameters": {
+									"File_Name": {
+										"value": "@concat(pipeline().parameters.File_Name,'-',utcNow(),'.csv')",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"Table_Name": {
+						"type": "string"
+					},
+					"File_Name": {
+						"type": "string"
+					},
+					"Schema_Name": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "pipeline_tutorial"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-07-15T12:08:48Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_Ingest_Sales_To_Bronze')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Automated Pipeline that ingests raw data, cleans and enriches it using data flow mapping and loads it into curated gold layer tables in Synapse Analytics",
+				"activities": [
+					{
+						"name": "Copy Desserts4all Landing to Bronze",
+						"description": "copy Desserts4all CSV files to Bronze Container using a storage event trigger with logging enable in landing container",
+						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": false,
+									"wildcardFolderPath": "desserts4all",
+									"wildcardFileName": "*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "MergeFiles"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_sacproject9",
+										"type": "LinkedServiceReference"
+									},
+									"path": "landing"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_dessert4all",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_dessert4all_parquet",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Delete CSV files",
+						"description": "Delete CSV files in Landing Container that have been copied to the bronze container",
+						"type": "Delete",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Wait to delete raw input files",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_delete_desserts",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"logStorageSettings": {
+								"linkedServiceName": {
+									"referenceName": "ls_sacproject9",
+									"type": "LinkedServiceReference"
+								},
+								"path": "landing"
+							},
+							"enableLogging": true,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": false,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "Wait to delete raw input files",
+						"type": "Wait",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Copy Desserts4all Landing to Bronze",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 240
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Pipelines with Triggers"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-07-15T14:37:35Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_class_activity_adf_dataset')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copy and unzip adf datasets",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"compressionProperties": {
+										"type": "ZipDeflateReadSettings"
+									}
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adf_datasets",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adf_dataset_unzipped",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "DE_bootcamp"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-28T17:22:53Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_convertfiles')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2913,249 +3249,6 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-06-28T17:22:53Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Bronze to Silver')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "ds_dessert4all_parquet",
-								"type": "DatasetReference"
-							},
-							"name": "Desserts4allParquet"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "ds_desserts4all_clean_silver",
-								"type": "DatasetReference"
-							},
-							"name": "Destination"
-						}
-					],
-					"transformations": [
-						{
-							"name": "DerivedColumn"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          SalesMonth as string,",
-						"          Retailer as string,",
-						"          Product as string,",
-						"          SalesValueUSD as float,",
-						"          UnitsSold as integer",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> Desserts4allParquet",
-						"Desserts4allParquet derive(Revenue = SalesValueUSD*UnitsSold) ~> DerivedColumn",
-						"DerivedColumn sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'parquet',",
-						"     partitionFileNames:['cleaned_desserts4all.parquet'],",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> Destination"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Dataflow Cleaned Silver to Gold')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "ds_desserts4all_clean_silver",
-								"type": "DatasetReference"
-							},
-							"name": "CleanedDessert4all"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "AzureSynapseAnalyticsTable8",
-								"type": "DatasetReference"
-							},
-							"name": "sqlpool"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AggregateTotalRevenue"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          SalesMonth as string,",
-						"          Retailer as string,",
-						"          Product as string,",
-						"          SalesValueUSD as float,",
-						"          UnitsSold as integer,",
-						"          Revenue as long",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> CleanedDessert4all",
-						"CleanedDessert4all aggregate(groupBy(Product),",
-						"     Revenue = sum(Revenue)) ~> AggregateTotalRevenue",
-						"AggregateTotalRevenue sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     format: 'table',",
-						"     staged: true,",
-						"     allowCopyCommand: true,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> sqlpool"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow_for_jollygood')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "ds_jollygood_xlsx",
-								"type": "DatasetReference"
-							},
-							"name": "SourceJollyGoodxsl",
-							"description": "Transforming Jolly Good excel file using a lookup reference file."
-						},
-						{
-							"linkedService": {
-								"referenceName": "ADLS linked service",
-								"type": "LinkedServiceReference"
-							},
-							"name": "ExchangeRateJollyGood"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "ds_sql_sales_xlsx_sales_table",
-								"type": "DatasetReference"
-							},
-							"name": "SinkToSalesLoadTable"
-						}
-					],
-					"transformations": [
-						{
-							"name": "FilterOutMonthTotal"
-						},
-						{
-							"name": "FilterCurrencytoUSD"
-						},
-						{
-							"name": "lookupExchangeRates"
-						},
-						{
-							"name": "derivedColumnTotalSales"
-						},
-						{
-							"name": "SelectRequiredColumns"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          Period as date,",
-						"          Product as string,",
-						"          {Unit Price} as double,",
-						"          Currency as string,",
-						"          {Units Sold} as integer",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> SourceJollyGoodxsl",
-						"source(output(",
-						"          FromCurrency as string,",
-						"          ToCurrency as string,",
-						"          Date as date,",
-						"          ExchangeRate as double",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'excel',",
-						"     fileSystem: 'source',",
-						"     folderPath: 'landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData',",
-						"     fileName: 'ExchangeRates.xlsx',",
-						"     sheetName: 'Sheet1',",
-						"     firstRowAsHeader: true) ~> ExchangeRateJollyGood",
-						"SourceJollyGoodxsl filter(Product!='Month Total') ~> FilterOutMonthTotal",
-						"ExchangeRateJollyGood filter(ToCurrency=='USD') ~> FilterCurrencytoUSD",
-						"FilterOutMonthTotal, FilterCurrencytoUSD lookup(Period == Date",
-						"     && Currency == FromCurrency,",
-						"     multiple: false,",
-						"     pickup: 'any',",
-						"     broadcast: 'auto')~> lookupExchangeRates",
-						"lookupExchangeRates derive(SalesValueUSD = {Unit Price}*ExchangeRate*{Units Sold}) ~> derivedColumnTotalSales",
-						"derivedColumnTotalSales select(mapColumn(",
-						"          Product,",
-						"          {Unit Price},",
-						"          {Units Sold},",
-						"          Date,",
-						"          SalesValueUSD",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> SelectRequiredColumns",
-						"SelectRequiredColumns sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          RowId as integer,",
-						"          Retailer as string,",
-						"          SalesMonth as date,",
-						"          Product as string,",
-						"          ManufacturerProductCode as string,",
-						"          SalesValueUSD as decimal(18,2),",
-						"          UnitsSold as integer",
-						"     ),",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     format: 'table',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          SalesMonth = Date,",
-						"          Product,",
-						"          SalesValueUSD,",
-						"          UnitsSold = {Units Sold}",
-						"     )) ~> SinkToSalesLoadTable"
-					]
-				}
 			},
 			"dependsOn": []
 		}

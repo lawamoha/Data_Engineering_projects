@@ -179,6 +179,10 @@
 			"type": "string",
 			"defaultValue": "https://saproject9.dfs.core.windows.net/"
 		},
+		"Trigger_mp1_properties_pipeline_parameters_windowStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
 		"trigger_desserts4all_new_csv_file_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/rg-dataengrbootcamp/providers/Microsoft.Storage/storageAccounts/sacproject9"
@@ -440,6 +444,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"Trigger_mp1_properties_pipeline_parameters_windowStart": {
+						"value": "[parameters('Trigger_mp1_properties_pipeline_parameters_windowStart')]"
 					},
 					"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
 						"value": "[parameters('trigger_for_handy_candy_parquet_properties_typeProperties_scope')]"
