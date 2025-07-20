@@ -125,7 +125,7 @@
 										}
 									},
 									{
-										"name": "Set variable3",
+										"name": "Set variable2",
 										"type": "SetVariable",
 										"dependsOn": [
 											{
