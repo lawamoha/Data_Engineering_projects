@@ -13,6 +13,117 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_adls_pop_by_age')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_TO_COPY_HIV_DATA_INTO_ADLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "rawfile.tsv",
+						"fileSystem": "landing"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "indic_de",
+						"type": "String"
+					},
+					{
+						"name": "geo\\time",
+						"type": "String"
+					},
+					{
+						"name": "2008 ",
+						"type": "String"
+					},
+					{
+						"name": "2009 ",
+						"type": "String"
+					},
+					{
+						"name": "2010 ",
+						"type": "String"
+					},
+					{
+						"name": "2011 ",
+						"type": "String"
+					},
+					{
+						"name": "2012 ",
+						"type": "String"
+					},
+					{
+						"name": "2013 ",
+						"type": "String"
+					},
+					{
+						"name": "2014 ",
+						"type": "String"
+					},
+					{
+						"name": "2015 ",
+						"type": "String"
+					},
+					{
+						"name": "2016 ",
+						"type": "String"
+					},
+					{
+						"name": "2017 ",
+						"type": "String"
+					},
+					{
+						"name": "2018 ",
+						"type": "String"
+					},
+					{
+						"name": "2019 ",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob_tsv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_COPY_HIVDATA_BLOB_SERVICE",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "population_by_age.tsv.gz",
+						"container": "hiv-data"
+					},
+					"columnDelimiter": "\t",
+					"compressionCodec": "gzip",
+					"compressionLevel": "Fastest",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_candy_shack_with_parameter')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -574,59 +685,6 @@
 					"orcCompressionCodec": null,
 					"enablePhysicalSchema": true
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_sales_sql')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_asqldb_dbebootcamp1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Sales_LOAD"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_saleslt_dynamic_copy')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_COPY_HIVDATA_BLOB_SERVICE",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"File_Name": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@dataset().File_Name",
-							"type": "Expression"
-						},
-						"container": "saleslt"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
 			},
 			"dependsOn": []
 		}

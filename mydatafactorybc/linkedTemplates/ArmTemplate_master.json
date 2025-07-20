@@ -183,6 +183,14 @@
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowStartTime"
 		},
+		"Trigger_xit_properties_pipeline_parameters_windowStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_xit_properties_pipeline_parameters_windowEnd": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowEndTime"
+		},
 		"trigger_desserts4all_new_csv_file_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/rg-dataengrbootcamp/providers/Microsoft.Storage/storageAccounts/sacproject9"
@@ -447,6 +455,12 @@
 					},
 					"Trigger_mp1_properties_pipeline_parameters_windowStart": {
 						"value": "[parameters('Trigger_mp1_properties_pipeline_parameters_windowStart')]"
+					},
+					"Trigger_xit_properties_pipeline_parameters_windowStart": {
+						"value": "[parameters('Trigger_xit_properties_pipeline_parameters_windowStart')]"
+					},
+					"Trigger_xit_properties_pipeline_parameters_windowEnd": {
+						"value": "[parameters('Trigger_xit_properties_pipeline_parameters_windowEnd')]"
 					},
 					"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
 						"value": "[parameters('trigger_for_handy_candy_parquet_properties_typeProperties_scope')]"

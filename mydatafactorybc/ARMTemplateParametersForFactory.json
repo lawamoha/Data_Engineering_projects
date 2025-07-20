@@ -137,6 +137,12 @@
 		"Trigger_mp1_properties_pipeline_parameters_windowStart": {
 			"value": "@trigger().outputs.windowStartTime"
 		},
+		"Trigger_xit_properties_pipeline_parameters_windowStart": {
+			"value": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_xit_properties_pipeline_parameters_windowEnd": {
+			"value": "@trigger().outputs.windowEndTime"
+		},
 		"trigger_desserts4all_new_csv_file_properties_typeProperties_scope": {
 			"value": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/rg-dataengrbootcamp/providers/Microsoft.Storage/storageAccounts/sacproject9"
 		},

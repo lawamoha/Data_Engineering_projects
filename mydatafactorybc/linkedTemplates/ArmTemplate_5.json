@@ -11,6 +11,14 @@
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowStartTime"
 		},
+		"Trigger_xit_properties_pipeline_parameters_windowStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_xit_properties_pipeline_parameters_windowEnd": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowEndTime"
+		},
 		"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/Az900/providers/Microsoft.Storage/storageAccounts/mynewstorageacctdb"
@@ -24,6 +32,466 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pp_SQL_To_Iceberg')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_SQL_To_Iceberg",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "IcebergSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "IcebergWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "AddressID",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "AddressID",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "AddressLine1",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AddressLine1",
+											"physicalType": "string"
+										}
+									},
+									{
+										"source": {
+											"name": "AddressLine2",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AddressLine2",
+											"physicalType": "string"
+										}
+									},
+									{
+										"source": {
+											"name": "City",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "City",
+											"physicalType": "string"
+										}
+									},
+									{
+										"source": {
+											"name": "StateProvince",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "StateProvince",
+											"physicalType": "string"
+										}
+									},
+									{
+										"source": {
+											"name": "CountryRegion",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "CountryRegion",
+											"physicalType": "string"
+										}
+									},
+									{
+										"source": {
+											"name": "PostalCode",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "PostalCode",
+											"physicalType": "string"
+										}
+									},
+									{
+										"source": {
+											"name": "rowguid",
+											"type": "Guid",
+											"physicalType": "uniqueidentifier"
+										},
+										"sink": {
+											"name": "rowguid",
+											"physicalType": "string"
+										}
+									},
+									{
+										"source": {
+											"name": "ModifiedDate",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										},
+										"sink": {
+											"name": "ModifiedDate",
+											"physicalType": "timestamp"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Ds_salesltaddress_sql",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Ds_Salesltproducts_Iceberg",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Iceberg"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-28T17:22:53Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pp_copy_tsv_gz_to_orc')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_from_tsv_to_orc",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "OrcSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "OrcWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "indic_de,geo\\time",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "indic_de_geo_time",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2008 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2008",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2009 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2009",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2010 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2010",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2011 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2011 ",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2012 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2012 ",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2013 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2013 ",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2014 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2014 ",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2015 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2015 ",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2016 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2016 ",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2017 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2017",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2018 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2018 ",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "2019 ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "2019 ",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_blob_tsv",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_population_orc",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "DE_bootcamp"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-28T17:22:53Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pp_sql_database_to_ded_sql_pool')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_Address_data_sql_to_dedpool",
+						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"allowCopyCommand": true,
+								"copyCommandSettings": {}
+							},
+							"enableStaging": true,
+							"stagingSettings": {
+								"linkedServiceName": {
+									"referenceName": "ADLSFORCSV",
+									"type": "LinkedServiceReference"
+								},
+								"path": "landing"
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Ds_salesltaddress_sql",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "DE_bootcamp"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-28T17:22:53Z"
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Bronze to Silver')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
@@ -499,6 +967,45 @@
 					"frequency": "Hour",
 					"interval": 24,
 					"startTime": "2025-07-15T16:23:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Trigger_xit')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "CopyPipeline_xit",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"windowStart": {
+							"type": "Expression",
+							"value": "[parameters('Trigger_xit_properties_pipeline_parameters_windowStart')]"
+						},
+						"windowEnd": {
+							"type": "Expression",
+							"value": "[parameters('Trigger_xit_properties_pipeline_parameters_windowEnd')]"
+						}
+					}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Minute",
+					"interval": 5,
+					"startTime": "2025-07-15T19:52:00Z",
+					"endTime": "2025-07-21T19:52:00Z",
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
