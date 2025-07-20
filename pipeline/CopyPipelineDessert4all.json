@@ -71,6 +71,9 @@
 				"type": "String"
 			}
 		},
+		"folder": {
+			"name": "pipeline_tutorial"
+		},
 		"annotations": []
 	}
 }
