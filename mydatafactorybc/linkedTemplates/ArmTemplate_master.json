@@ -464,6 +464,26 @@
 					},
 					"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
 						"value": "[parameters('trigger_for_handy_candy_parquet_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'mydatafactorybc_ArmTemplate_4')]"
+			]
+		},
+		{
+			"name": "mydatafactorybc_ArmTemplate_6",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_6.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
 					},
 					"trigger_desserts4all_new_csv_file_properties_typeProperties_scope": {
 						"value": "[parameters('trigger_desserts4all_new_csv_file_properties_typeProperties_scope')]"
@@ -471,7 +491,7 @@
 				}
 			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'mydatafactorybc_ArmTemplate_4')]"
+				"[resourceId('Microsoft.Resources/deployments', 'mydatafactorybc_ArmTemplate_5')]"
 			]
 		}
 	]
