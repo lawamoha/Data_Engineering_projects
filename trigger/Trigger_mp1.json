@@ -2,7 +2,7 @@
 	"name": "Trigger_mp1",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "CopyPipelineDessert4all",
