@@ -108,7 +108,7 @@
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Set variable2",
+										"name": "Set variable1",
 										"type": "SetVariable",
 										"dependsOn": [],
 										"policy": {
@@ -129,7 +129,7 @@
 										"type": "SetVariable",
 										"dependsOn": [
 											{
-												"activity": "Set variable2",
+												"activity": "Set variable1",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -150,80 +150,80 @@
 									}
 								]
 							}
-						},
-						{
-							"name": "Copy desserts4all using lastmodified",
-							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "If Condition for Last Modified",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "DelimitedTextSource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
-									},
-									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
-									}
-								},
-								"sink": {
-									"type": "DelimitedTextSink",
-									"storeSettings": {
-										"type": "AzureBlobStorageWriteSettings"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ".txt"
-									}
-								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
-							},
-							"inputs": [
-								{
-									"referenceName": "ds_dessertsforall_dynamic_getmetadata",
-									"type": "DatasetReference",
-									"parameters": {
-										"FileName": {
-											"value": "@variables('FileName')",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "ds_desserts4all_sink_silver",
-									"type": "DatasetReference"
-								}
-							]
 						}
 					]
 				}
+			},
+			{
+				"name": "Copy desserts4all using lastmodified",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "ForEach file from Desserts4all",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_dessertsforall_dynamic_getmetadata",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": {
+								"value": "@variables('FileName')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_desserts4all_sink_silver",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"variables": {
