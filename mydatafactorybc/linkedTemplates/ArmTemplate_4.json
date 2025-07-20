@@ -275,7 +275,7 @@
 															"sink": {
 																"type": "AzureSqlSink",
 																"preCopyScript": {
-																	"value": "@json(item().CopySinkSettings).preCopyScript",
+																	"value": "@json(item().CopySinkSettings).preCopyScript\n\n",
 																	"type": "Expression"
 																},
 																"tableOption": {
@@ -425,13 +425,16 @@
 															"sink": {
 																"type": "AzureSqlSink",
 																"preCopyScript": {
-																	"value": "@json(item().CopySinkSettings).preCopyScript",
+																	"value": "@{json(item().CopySinkSettings).preCopyScript}",
 																	"type": "Expression"
 																},
+																"writeBehavior": "insert",
+																"sqlWriterUseTableLock": false,
 																"tableOption": {
-																	"value": "@json(item().CopySinkSettings).tableOption",
+																	"value": "@{json(item().CopySinkSettings).tableOption}",
 																	"type": "Expression"
-																}
+																},
+																"disableMetricsCollection": false
 															},
 															"enableStaging": false,
 															"validateDataConsistency": false,
