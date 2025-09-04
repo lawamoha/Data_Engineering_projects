@@ -1,0 +1,13 @@
+{
+	"name": "HttpServerApiUsers",
+	"properties": {
+		"description": "https://reqres.in/api/users",
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://reqres.in/api/users",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
