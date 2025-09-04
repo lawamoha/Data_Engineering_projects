@@ -1,0 +1,16 @@
+{
+	"name": "AzureSqlTableApiUsers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Dynamic linked service",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "api",
+			"table": "apiusers"
+		}
+	}
+}
