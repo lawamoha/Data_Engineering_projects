@@ -19,7 +19,10 @@
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "Dynamic linked service",
-					"type": "LinkedServiceReference"
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"db_name": "mydbtestadf001"
+					}
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
