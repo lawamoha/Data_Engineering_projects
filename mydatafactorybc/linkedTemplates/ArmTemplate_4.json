@@ -13,6 +13,124 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_sweet_treats_sql')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_asqldb_dbebootcamp1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "newtable"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dscopyintoADLS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_TO_COPY_HIV_DATA_INTO_ADLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "rawfile.tsv",
+						"fileSystem": "landing"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/parquetfile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADLS linked service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "parquet-staging"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "TransactionId",
+						"type": "UTF8"
+					},
+					{
+						"name": "TransactionDate",
+						"type": "INT96"
+					},
+					{
+						"name": "StoreId",
+						"type": "INT32"
+					},
+					{
+						"name": "Product",
+						"type": "UTF8"
+					},
+					{
+						"name": "Price",
+						"type": "FLOAT"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sqltocsv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SQLtoADLS",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "datasets1"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "olist_order_payments_dataset.csv",
+						"folderPath": "bronze",
+						"fileSystem": "source"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CopyPipelineDessert4all')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -957,6 +1075,323 @@
 				"annotations": [],
 				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/sqltocsv')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/api_users_pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copy_api_users_csv_adls",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['id']"
+										},
+										"sink": {
+											"name": "id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "[['email']"
+										},
+										"sink": {
+											"name": "email"
+										}
+									},
+									{
+										"source": {
+											"path": "[['first_name']"
+										},
+										"sink": {
+											"name": "first_name"
+										}
+									},
+									{
+										"source": {
+											"path": "[['last_name']"
+										},
+										"sink": {
+											"name": "last_name"
+										}
+									},
+									{
+										"source": {
+											"path": "[['avatar']"
+										},
+										"sink": {
+											"name": "avatar"
+										}
+									},
+									{
+										"source": {
+											"path": "$['page']"
+										},
+										"sink": {
+											"name": "page"
+										}
+									},
+									{
+										"source": {
+											"path": "$['per_page']"
+										},
+										"sink": {
+											"name": "per_page"
+										}
+									},
+									{
+										"source": {
+											"path": "$['total']"
+										},
+										"sink": {
+											"name": "total"
+										}
+									},
+									{
+										"source": {
+											"path": "$['total_pages']"
+										},
+										"sink": {
+											"name": "total_pages"
+										}
+									},
+									{
+										"source": {
+											"path": "$['support']['url']"
+										},
+										"sink": {
+											"name": "url"
+										}
+									},
+									{
+										"source": {
+											"path": "$['support']['text']"
+										},
+										"sink": {
+											"name": "text"
+										}
+									}
+								],
+								"collectionReference": "$['data']",
+								"mapComplexValuesToString": false
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Json_api_users",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "api_users",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "copy_api_users_sqldb",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "copy_api_users_csv_adls",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['page']"
+										},
+										"sink": {
+											"name": "page"
+										}
+									},
+									{
+										"source": {
+											"path": "$['per_page']"
+										},
+										"sink": {
+											"name": "per_page"
+										}
+									},
+									{
+										"source": {
+											"path": "$['total']"
+										},
+										"sink": {
+											"name": "total"
+										}
+									},
+									{
+										"source": {
+											"path": "$['total_pages']"
+										},
+										"sink": {
+											"name": "total_pages"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data'][0]['id']"
+										},
+										"sink": {
+											"name": "id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data'][0]['email']"
+										},
+										"sink": {
+											"name": "email",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data'][0]['first_name']"
+										},
+										"sink": {
+											"name": "first_name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data'][0]['last_name']"
+										},
+										"sink": {
+											"name": "last_name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data'][0]['avatar']"
+										},
+										"sink": {
+											"name": "avatar",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['support']['url']"
+										},
+										"sink": {
+											"name": "url"
+										}
+									},
+									{
+										"source": {
+											"path": "$['support']['text']"
+										},
+										"sink": {
+											"name": "text"
+										}
+									}
+								],
+								"collectionReference": "$['data']",
+								"mapComplexValuesToString": false
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Json_api_users",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlTableApiUsers",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
 			"dependsOn": []
 		},
 		{
@@ -1038,7 +1473,9 @@
 				"annotations": [],
 				"lastPublishTime": "2025-06-28T17:22:53Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/dscopyintoADLS')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/pl copy tables to adls usind dynamic parameters')]",
@@ -2505,748 +2942,9 @@
 				"annotations": [],
 				"lastPublishTime": "2025-07-13T19:36:47Z"
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_copying_json_into_sqldb')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "copy json into db",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFolderPath": "landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData/SugarCube",
-									"wildcardFileName": "*.json",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"preCopyScript": "truncate table dbo.Sales_LOAD_NEW",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"path": "$['Month']"
-										},
-										"sink": {
-											"name": "SalesMonth",
-											"type": "DateTime"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Company']"
-										},
-										"sink": {
-											"name": "Retailer",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['Product']"
-										},
-										"sink": {
-											"name": "Product",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['ManufacturerProductCode']"
-										},
-										"sink": {
-											"name": "ManufacturerProductCode",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['Units']"
-										},
-										"sink": {
-											"name": "UnitsSold",
-											"type": "Int32"
-										}
-									},
-									{
-										"source": {
-											"path": "[['Value']"
-										},
-										"sink": {
-											"name": "SalesValueUSD",
-											"type": "Decimal"
-										}
-									}
-								],
-								"collectionReference": "$['Sales']"
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_Json_sugarcube",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_candyshack_sql",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "DE_bootcamp"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-06-29T22:39:29Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_csv_to_sqldb')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "creating additional fileds (columns) at the destination also using dynamic contents (expressions)",
-				"activities": [
-					{
-						"name": "copy sweet treats to a table",
-						"description": "lesson learnt when creating new columns, using the pre-copy script at the sink the fields are created but the data did not copy, I had to go back to remove the pre-copy script and debug the pipeline.",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"additionalColumns": [
-									{
-										"name": "AuditId",
-										"value": {
-											"value": "@pipeline().RunId",
-											"type": "Expression"
-										}
-									},
-									{
-										"name": "FilePath",
-										"value": "$$FILEPATH"
-									}
-								],
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFolderPath": "landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData/SweetTreats",
-									"wildcardFileName": "*",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"preCopyScript": "alter table [dbo].[newtable]\nadd AuditId uniqueidentifier null, FilePath nvarchar (500)",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_sweet_treats_csv",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_sweet_treats_sql",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "pipeline_tutorial"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-07-05T02:23:42Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_incremental_load_copy_files')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Get Metadata Desserts4all",
-						"description": "Lookup datasets\nstatic (no parameters)",
-						"type": "GetMetadata",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "ds_desserts4all_csv_incremental",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"fieldList": [
-								"childItems"
-							],
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "DelimitedTextReadSettings"
-							}
-						}
-					},
-					{
-						"name": "ForEach file from Desserts4all",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Get Metadata Desserts4all",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Get Metadata Desserts4all').output.childItems",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "Get Metadata of Get Metadata Activity",
-									"description": "dynamic Get Metadata using\nLast Modified Data\n",
-									"type": "GetMetadata",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataset": {
-											"referenceName": "ds_dessertsforall_dynamic_getmetadata",
-											"type": "DatasetReference",
-											"parameters": {
-												"FileName": {
-													"value": "@item().name",
-													"type": "Expression"
-												}
-											}
-										},
-										"fieldList": [
-											"lastModified",
-											"itemName"
-										],
-										"storeSettings": {
-											"type": "AzureBlobFSReadSettings",
-											"recursive": true,
-											"enablePartitionDiscovery": false
-										},
-										"formatSettings": {
-											"type": "DelimitedTextReadSettings"
-										}
-									}
-								},
-								{
-									"name": "If Condition for Last Modified",
-									"type": "IfCondition",
-									"dependsOn": [
-										{
-											"activity": "Get Metadata of Get Metadata Activity",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"expression": {
-											"value": "@greater(activity('Get Metadata of Get Metadata Activity').output.lastModified,variables('PreviousFile'))",
-											"type": "Expression"
-										},
-										"ifTrueActivities": [
-											{
-												"name": "Set variable1",
-												"type": "SetVariable",
-												"dependsOn": [],
-												"policy": {
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"variableName": "PreviousFile",
-													"value": {
-														"value": "@activity('Get Metadata of Get Metadata Activity').output.lastModified",
-														"type": "Expression"
-													}
-												}
-											},
-											{
-												"name": "Set variable2",
-												"type": "SetVariable",
-												"dependsOn": [
-													{
-														"activity": "Set variable1",
-														"dependencyConditions": [
-															"Succeeded"
-														]
-													}
-												],
-												"policy": {
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"variableName": "FileName",
-													"value": {
-														"value": "@activity('Get Metadata of Get Metadata Activity').output.itemName",
-														"type": "Expression"
-													}
-												}
-											}
-										]
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Copy desserts4all using lastmodified",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "ForEach file from Desserts4all",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_dessertsforall_dynamic_getmetadata",
-								"type": "DatasetReference",
-								"parameters": {
-									"FileName": {
-										"value": "@variables('FileName')",
-										"type": "Expression"
-									}
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_desserts4all_sink_silver",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"PreviousFile": {
-						"type": "String"
-					},
-					"FileName": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "Incremental Copy CSV Files"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_multiple_csv_to_asql')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "copy csvfile to sqldb",
-						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_csv_sales",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_sales_sql",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Copy multiple csv files into a sqldb table sales_LOAD",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFolderPath": "landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData/SweetTreats",
-									"wildcardFileName": "*",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"preCopyScript": "truncate table [dbo].[sales_LOAD]",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": true,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_multiple_csv_files",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_sales_sql",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "DE_bootcamp"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-06-28T18:21:07Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_test_mapping')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy Candy Shack using mapping",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFolderPath": "landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData/CandyShack",
-									"wildcardFileName": "*",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"preCopyScript": "truncate table dbo.Sales_LOAD_NEW",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "Retailer",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Retailer",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "SalesMonth",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "SalesMonth",
-											"type": "DateTime",
-											"physicalType": "date"
-										}
-									},
-									{
-										"source": {
-											"name": "Product",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Product",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "SalesValue",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "SalesValueUSD",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 2,
-											"precision": 18
-										}
-									},
-									{
-										"source": {
-											"name": "UnitsSold",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "UnitsSold",
-											"type": "Int32",
-											"physicalType": "int"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_candyshack",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_candyshack_sql",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "DE_bootcamp"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-06-29T21:39:21Z"
-			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/parquetfile')]"
+			]
 		}
 	]
 }

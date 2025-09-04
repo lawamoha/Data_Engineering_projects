@@ -123,6 +123,10 @@
 			"type": "string",
 			"defaultValue": "sqldeuser"
 		},
+		"HttpServerApiUsers_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://reqres.in/api/users"
+		},
 		"LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
@@ -313,6 +317,9 @@
 					"Dynamic linked service_properties_typeProperties_userName": {
 						"value": "[parameters('Dynamic linked service_properties_typeProperties_userName')]"
 					},
+					"HttpServerApiUsers_properties_typeProperties_url": {
+						"value": "[parameters('HttpServerApiUsers_properties_typeProperties_url')]"
+					},
 					"LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url": {
 						"value": "[parameters('LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url')]"
 					},
@@ -452,18 +459,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"Trigger_mp1_properties_pipeline_parameters_windowStart": {
-						"value": "[parameters('Trigger_mp1_properties_pipeline_parameters_windowStart')]"
-					},
-					"Trigger_xit_properties_pipeline_parameters_windowStart": {
-						"value": "[parameters('Trigger_xit_properties_pipeline_parameters_windowStart')]"
-					},
-					"Trigger_xit_properties_pipeline_parameters_windowEnd": {
-						"value": "[parameters('Trigger_xit_properties_pipeline_parameters_windowEnd')]"
-					},
-					"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
-						"value": "[parameters('trigger_for_handy_candy_parquet_properties_typeProperties_scope')]"
 					}
 				}
 			},
@@ -484,6 +479,18 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"Trigger_mp1_properties_pipeline_parameters_windowStart": {
+						"value": "[parameters('Trigger_mp1_properties_pipeline_parameters_windowStart')]"
+					},
+					"Trigger_xit_properties_pipeline_parameters_windowStart": {
+						"value": "[parameters('Trigger_xit_properties_pipeline_parameters_windowStart')]"
+					},
+					"Trigger_xit_properties_pipeline_parameters_windowEnd": {
+						"value": "[parameters('Trigger_xit_properties_pipeline_parameters_windowEnd')]"
+					},
+					"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
+						"value": "[parameters('trigger_for_handy_candy_parquet_properties_typeProperties_scope')]"
 					},
 					"trigger_desserts4all_new_csv_file_properties_typeProperties_scope": {
 						"value": "[parameters('trigger_desserts4all_new_csv_file_properties_typeProperties_scope')]"

@@ -123,6 +123,10 @@
 			"type": "string",
 			"defaultValue": "sqldeuser"
 		},
+		"HttpServerApiUsers_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://reqres.in/api/users"
+		},
 		"LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
@@ -315,6 +319,22 @@
 						"type": "SecureString",
 						"value": "[parameters('Dynamic linked service_password')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HttpServerApiUsers')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "https://reqres.in/api/users",
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('HttpServerApiUsers_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []
@@ -561,27 +581,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_asqldb_dbebootcamp1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable8')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSynapseAnalytics2",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlDWTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SalesGold"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics2')]"
 			]
 		}
 	]

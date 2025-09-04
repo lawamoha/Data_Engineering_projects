@@ -13,6 +13,172 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_dessertsforall_dynamic_getmetadata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADLS linked service",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": "landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData/Desserts4All",
+						"fileSystem": "source"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_dynamic_tables')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dynamic linked service",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"db_name": "dbdebootcamp "
+					}
+				},
+				"parameters": {
+					"Table_Name": {
+						"type": "string"
+					},
+					"Schema_Name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().Schema_Name",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().Table_Name",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_jollygood_xlsx')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADLS linked service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "SALES",
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Sales Apr-Sep 2020.xlsx",
+						"folderPath": "landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData/JollyGood",
+						"fileSystem": "source"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "Period",
+						"type": "String"
+					},
+					{
+						"name": "Product",
+						"type": "String"
+					},
+					{
+						"name": "Unit Price",
+						"type": "String"
+					},
+					{
+						"name": "Currency",
+						"type": "String"
+					},
+					{
+						"name": "Units Sold",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_json_handycandy')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADLS linked service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "landing/Azure-Data-Factory-datasets/Azure-Data-Factory-by-Example-Second-Edition-main/SampleData/HandyCandy",
+						"fileSystem": "source"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"TransactionId": {
+							"type": "string"
+						},
+						"TransactionDate": {
+							"type": "string"
+						},
+						"StoreId": {
+							"type": "string"
+						},
+						"Items": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"Product": {
+										"type": "string"
+									},
+									"Price": {
+										"type": "number"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_multiple_csv_files')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -463,124 +629,6 @@
 						"type": "String"
 					}
 				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_sweet_treats_sql')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_asqldb_dbebootcamp1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "newtable"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dscopyintoADLS')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_TO_COPY_HIV_DATA_INTO_ADLS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "rawfile.tsv",
-						"fileSystem": "landing"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/parquetfile')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ADLS linked service",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "parquet-staging"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "TransactionId",
-						"type": "UTF8"
-					},
-					{
-						"name": "TransactionDate",
-						"type": "INT96"
-					},
-					{
-						"name": "StoreId",
-						"type": "INT32"
-					},
-					{
-						"name": "Product",
-						"type": "UTF8"
-					},
-					{
-						"name": "Price",
-						"type": "FLOAT"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sqltocsv')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SQLtoADLS",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "datasets1"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "olist_order_payments_dataset.csv",
-						"folderPath": "bronze",
-						"fileSystem": "source"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
 			},
 			"dependsOn": []
 		}

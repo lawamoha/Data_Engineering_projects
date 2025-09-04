@@ -123,6 +123,10 @@
 			"type": "string",
 			"defaultValue": "sqldeuser"
 		},
+		"HttpServerApiUsers_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://reqres.in/api/users"
+		},
 		"LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mynewstorageacctdb.dfs.core.windows.net/"
@@ -1672,6 +1676,325 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/Bronze to Silver')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/api_users_pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copy_api_users_csv_adls",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['id']"
+										},
+										"sink": {
+											"name": "id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "[['email']"
+										},
+										"sink": {
+											"name": "email"
+										}
+									},
+									{
+										"source": {
+											"path": "[['first_name']"
+										},
+										"sink": {
+											"name": "first_name"
+										}
+									},
+									{
+										"source": {
+											"path": "[['last_name']"
+										},
+										"sink": {
+											"name": "last_name"
+										}
+									},
+									{
+										"source": {
+											"path": "[['avatar']"
+										},
+										"sink": {
+											"name": "avatar"
+										}
+									},
+									{
+										"source": {
+											"path": "$['page']"
+										},
+										"sink": {
+											"name": "page"
+										}
+									},
+									{
+										"source": {
+											"path": "$['per_page']"
+										},
+										"sink": {
+											"name": "per_page"
+										}
+									},
+									{
+										"source": {
+											"path": "$['total']"
+										},
+										"sink": {
+											"name": "total"
+										}
+									},
+									{
+										"source": {
+											"path": "$['total_pages']"
+										},
+										"sink": {
+											"name": "total_pages"
+										}
+									},
+									{
+										"source": {
+											"path": "$['support']['url']"
+										},
+										"sink": {
+											"name": "url"
+										}
+									},
+									{
+										"source": {
+											"path": "$['support']['text']"
+										},
+										"sink": {
+											"name": "text"
+										}
+									}
+								],
+								"collectionReference": "$['data']",
+								"mapComplexValuesToString": false
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Json_api_users",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "api_users",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "copy_api_users_sqldb",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "copy_api_users_csv_adls",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['page']"
+										},
+										"sink": {
+											"name": "page"
+										}
+									},
+									{
+										"source": {
+											"path": "$['per_page']"
+										},
+										"sink": {
+											"name": "per_page"
+										}
+									},
+									{
+										"source": {
+											"path": "$['total']"
+										},
+										"sink": {
+											"name": "total"
+										}
+									},
+									{
+										"source": {
+											"path": "$['total_pages']"
+										},
+										"sink": {
+											"name": "total_pages"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data'][0]['id']"
+										},
+										"sink": {
+											"name": "id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data'][0]['email']"
+										},
+										"sink": {
+											"name": "email",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data'][0]['first_name']"
+										},
+										"sink": {
+											"name": "first_name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data'][0]['last_name']"
+										},
+										"sink": {
+											"name": "last_name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data'][0]['avatar']"
+										},
+										"sink": {
+											"name": "avatar",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['support']['url']"
+										},
+										"sink": {
+											"name": "url"
+										}
+									},
+									{
+										"source": {
+											"path": "$['support']['text']"
+										},
+										"sink": {
+											"name": "text"
+										}
+									}
+								],
+								"collectionReference": "$['data']",
+								"mapComplexValuesToString": false
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Json_api_users",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlTableApiUsers",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Json_api_users')]",
+				"[concat(variables('factoryId'), '/datasets/api_users')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTableApiUsers')]"
 			]
 		},
 		{
@@ -5422,6 +5745,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableApiUsers')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dynamic linked service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "api",
+					"table": "apiusers"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dynamic linked service')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable8')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5769,6 +6113,28 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Json_api_users')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HttpServerApiUsers",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/HttpServerApiUsers')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_m6t_ControlDS')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5955,6 +6321,35 @@
 						"fileSystem": "source"
 					}
 				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ADLS linked service')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/api_users')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADLS linked service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "api_users.csv",
+						"folderPath": "api_users",
+						"fileSystem": "apiusers"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ADLS linked service')]"
@@ -7494,6 +7889,22 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/HttpServerApiUsers')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "https://reqres.in/api/users",
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('HttpServerApiUsers_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/LS_COPY_HIVDATA_BLOB_SERVICE')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -7757,6 +8168,37 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/CopyPipeline_xit')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "MetadataDrivenCopyTask_m6t_TopLevel",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 1,
+					"startTime": "2025-07-18T20:35:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/MetadataDrivenCopyTask_m6t_TopLevel')]"
 			]
 		},
 		{
@@ -8079,37 +8521,6 @@
 				"[concat(variables('factoryId'), '/datasets/ds_jollygood_xlsx')]",
 				"[concat(variables('factoryId'), '/linkedServices/ADLS linked service')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sql_sales_xlsx_sales_table')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/trigger1')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "MetadataDrivenCopyTask_m6t_TopLevel",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Hour",
-					"interval": 1,
-					"startTime": "2025-07-18T20:35:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"intervalInSeconds": 30
-					},
-					"dependsOn": []
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/MetadataDrivenCopyTask_m6t_TopLevel')]"
 			]
 		}
 	]

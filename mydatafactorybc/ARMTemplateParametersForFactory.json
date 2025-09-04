@@ -92,6 +92,9 @@
 		"Dynamic linked service_properties_typeProperties_userName": {
 			"value": "sqldeuser"
 		},
+		"HttpServerApiUsers_properties_typeProperties_url": {
+			"value": "https://reqres.in/api/users"
+		},
 		"LS_TO_COPY_HIV_DATA_INTO_ADLS_properties_typeProperties_url": {
 			"value": "https://mynewstorageacctdb.dfs.core.windows.net/"
 		},

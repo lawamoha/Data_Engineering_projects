@@ -7,6 +7,22 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "mydatafactorybc"
 		},
+		"Trigger_mp1_properties_pipeline_parameters_windowStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_xit_properties_pipeline_parameters_windowStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_xit_properties_pipeline_parameters_windowEnd": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowEndTime"
+		},
+		"trigger_for_handy_candy_parquet_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/Az900/providers/Microsoft.Storage/storageAccounts/mynewstorageacctdb"
+		},
 		"trigger_desserts4all_new_csv_file_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/7da6867f-3619-473d-8729-3dfcc82da694/resourceGroups/rg-dataengrbootcamp/providers/Microsoft.Storage/storageAccounts/sacproject9"
@@ -16,6 +32,321 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Trigger_mp1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "CopyPipelineDessert4all",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"windowStart": {
+							"type": "Expression",
+							"value": "[parameters('Trigger_mp1_properties_pipeline_parameters_windowStart')]"
+						}
+					}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2025-07-15T16:23:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Trigger_xit')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "CopyPipeline_xit",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"windowStart": {
+							"type": "Expression",
+							"value": "[parameters('Trigger_xit_properties_pipeline_parameters_windowStart')]"
+						},
+						"windowEnd": {
+							"type": "Expression",
+							"value": "[parameters('Trigger_xit_properties_pipeline_parameters_windowEnd')]"
+						}
+					}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Minute",
+					"interval": 5,
+					"startTime": "2025-07-15T19:52:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger_for_handy_candy_parquet')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pl_copyfile_using_storage_events_trigger",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/parquet-staging/blobs/handy",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger_for_handy_candy_parquet_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_m6t_TopLevel')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This pipeline will count the total number of objects (tables etc.) required to be copied in this run, come up with the number of sequential batches based on the max allowed concurrent copy task, and then execute another pipeline to copy different batches sequentially.",
+				"activities": [
+					{
+						"name": "GetSumOfObjectsToCopy",
+						"description": "Count the total number of objects (tables etc.) required to be copied in this run.",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "SELECT count(*) as count FROM @{pipeline().parameters.MainControlTableName} where TopLevelPipelineName='@{pipeline().Pipeline}' and TriggerName like '%@{pipeline().TriggerName}%' and CopyEnabled = 1",
+									"type": "Expression"
+								},
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "MetadataDrivenCopyTask_m6t_ControlDS",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "CopyBatchesOfObjectsSequentially",
+						"description": "Come up with the number of sequential batches based on the max allowed concurrent copy tasks, and then execute another pipeline to copy different batches sequentially.",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetSumOfObjectsToCopy",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@range(0, add(div(activity('GetSumOfObjectsToCopy').output.firstRow.count,\n                    pipeline().parameters.MaxNumberOfConcurrentTasks),\n                    if(equals(mod(activity('GetSumOfObjectsToCopy').output.firstRow.count,\n                    pipeline().parameters.MaxNumberOfConcurrentTasks), 0), 0, 1)))",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "CopyObjectsInOneBatch",
+									"description": "Execute another pipeline to copy one batch of objects. The objects belonging to this batch will be copied parallelly.",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "MetadataDrivenCopyTask_m6t_MiddleLevel",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"MaxNumberOfObjectsReturnedFromLookupActivity": {
+												"value": "@pipeline().parameters.MaxNumberOfObjectsReturnedFromLookupActivity",
+												"type": "Expression"
+											},
+											"TopLevelPipelineName": {
+												"value": "@{pipeline().Pipeline}",
+												"type": "Expression"
+											},
+											"TriggerName": {
+												"value": "@{pipeline().TriggerName}",
+												"type": "Expression"
+											},
+											"CurrentSequentialNumberOfBatch": {
+												"value": "@item()",
+												"type": "Expression"
+											},
+											"SumOfObjectsToCopy": {
+												"value": "@activity('GetSumOfObjectsToCopy').output.firstRow.count",
+												"type": "Expression"
+											},
+											"SumOfObjectsToCopyForCurrentBatch": {
+												"value": "@min(pipeline().parameters.MaxNumberOfConcurrentTasks, activity('GetSumOfObjectsToCopy').output.firstRow.count)",
+												"type": "Expression"
+											},
+											"MainControlTableName": {
+												"value": "@pipeline().parameters.MainControlTableName",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"MaxNumberOfObjectsReturnedFromLookupActivity": {
+						"type": "Int",
+						"defaultValue": 5000
+					},
+					"MaxNumberOfConcurrentTasks": {
+						"type": "Int",
+						"defaultValue": 20
+					},
+					"MainControlTableName": {
+						"type": "String",
+						"defaultValue": "dbo.MainControlTable_m6t"
+					}
+				},
+				"folder": {
+					"name": "MetadataDrivenCopyTask_m6t_20250720"
+				},
+				"annotations": [
+					"MetadataDrivenSolution"
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Pipeline_Sales_To_Gold')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "pl_Ingest_Sales_To_Bronze",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_Ingest_Sales_To_Bronze",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Pl_Transform_Sales_To_Silver",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "pl_Ingest_Sales_To_Bronze",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Pl_Transform_Sales_To_Silver",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Pl_Aggregate_Sales_To_Gold",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Pl_Transform_Sales_To_Silver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Pl_Aggregate_Sales_To_Gold",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Pipelines with Triggers"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/pl_Ingest_Sales_To_Bronze_copy_ORIGINAL')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -157,7 +488,9 @@
 				"annotations": [],
 				"lastPublishTime": "2025-07-15T14:37:35Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Pipeline_Sales_To_Gold')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/trigger1')]",
@@ -186,7 +519,9 @@
 					"dependsOn": []
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/MetadataDrivenCopyTask_m6t_TopLevel')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/trigger_desserts4all_new_csv_file')]",
