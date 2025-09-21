@@ -40,12 +40,6 @@
 						"referenceName": "Ds_salesltaddress_sql",
 						"type": "DatasetReference"
 					}
-				],
-				"outputs": [
-					{
-						"referenceName": "AzureSynapseAnalyticsTable1",
-						"type": "DatasetReference"
-					}
 				]
 			}
 		],
@@ -53,7 +47,7 @@
 			"name": "DE_bootcamp"
 		},
 		"annotations": [],
-		"lastPublishTime": "2025-06-16T20:19:52Z"
+		"lastPublishTime": "2025-07-15T20:20:39Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
